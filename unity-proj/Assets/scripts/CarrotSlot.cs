@@ -5,6 +5,9 @@ public class CarrotSlot : MonoBehaviour {
 
 	public GameObject carrotToInstantiate;
 
+	public Shader selectShader;
+	public Shader normalShader;
+
 	float mBaseY;
 	bool mSelected;
 	bool mHasCarrot;
@@ -22,14 +25,14 @@ public class CarrotSlot : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(mSelected){
-			gameObject.transform.Translate(Vector3.down*10);
 			mSelected = false;
+			renderer.material.shader = normalShader;
 		}
 	}
 
 	void OnSelect(){
 		mSelected = true;
-		gameObject.transform.Translate(Vector3.up*10);
+		renderer.material.shader = selectShader;
 
 		if(Input.GetButtonDown("Action")){
 			if(!mHasCarrot && mGameController.TakeCarrot(1)){
@@ -43,7 +46,7 @@ public class CarrotSlot : MonoBehaviour {
 				if(carrot.GetLevel() > 0){
 					DestroyImmediate(mCarrotte);
 					mHasCarrot = false;
-					int carrotTaken = (int)(carrot.GetLevel() * (carrot.GetLevel() - 1) + 1);
+					int carrotTaken = (int)(carrot.GetLevel() * Mathf.Ceil(carrot.GetLevel() * 0.5f) + 1);
 					mGameController.GetCarrot(carrotTaken);
 				}
 			}
@@ -52,5 +55,24 @@ public class CarrotSlot : MonoBehaviour {
 
 	void OnDeselect(){
 		mSelected = false;
+	}
+
+	public bool HasCarrot(){
+		return mHasCarrot;
+	}
+
+	public bool HasGrownCarrot(){
+		if(mCarrotte != null)
+		{
+			Carrot carrotScript = mCarrotte.GetComponent<Carrot>();
+			return carrotScript.GetLevel() >= 1;
+		}
+
+		return false;
+	}
+
+	public void StealCarrot(){
+		mHasCarrot = false;
+		DestroyImmediate(mCarrotte);
 	}
 }
