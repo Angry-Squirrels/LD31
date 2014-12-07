@@ -5,8 +5,8 @@ public class RabbitSpawner : MonoBehaviour {
 
 	public GameObject bunnyToSpawn;
 
-	private int mBunniesToSpawnDurringDay = 1;
-	private int mBunniesToSpawnDurringNight = 1;
+	public int mBunniesToSpawnDurringDay = 3;
+	public int mBunniesToSpawnDurringNight = 5;
 
 	private float mDaySpawnRate;
 	private float mNightSpawnRate;
@@ -18,8 +18,8 @@ public class RabbitSpawner : MonoBehaviour {
 	private DayNightCycleManager mCycleManager;
 
 	void OnNewDay(int day){
-		mBunniesToSpawnDurringDay = 1 + day * 2;
-		mBunniesToSpawnDurringNight = 1 + day * 4;
+		mBunniesToSpawnDurringDay += day;
+		mBunniesToSpawnDurringNight += day;
 
 		mDaySpawnRate = mCycleManager.GetDayDuration() / (mBunniesToSpawnDurringDay-1);
 		mNightSpawnRate = mCycleManager.GetNightDuration() / (mBunniesToSpawnDurringNight-1);

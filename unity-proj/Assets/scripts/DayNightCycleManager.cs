@@ -56,9 +56,12 @@ public class DayNightCycleManager : MonoBehaviour {
 
 	private bool mCycling;
 
+	void Awake(){
+		instance = this;
+	}
+
 	// Use this for initialization
 	void Start () {
-		instance = this;
 		mCyclePosition = 0;
 		mTimeCounter = startingTimeOfDay;
 		mCurrentSkyColor = aubeSkyColor;

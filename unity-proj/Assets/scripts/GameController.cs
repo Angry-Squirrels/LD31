@@ -9,6 +9,14 @@ public class GameController : MonoBehaviour {
 	private DayNightCycleManager mDayManager;
 	private int mCurrentDay = 0;
 
+	public static GameController instance;
+
+	public int nbCarrot = 3;
+
+	void Awake(){
+		instance = this;
+	}
+
 	// Use this for initialization
 	void Start () {
 		mDayManager = DayNightCycleManager.instance;
@@ -24,5 +32,17 @@ public class GameController : MonoBehaviour {
 		Instantiate(hero);
 		mDayManager.StartCycles();
 		BroadcastMessage("GameStart");
+	}
+
+	public void GetCarrot(int nb){
+		nbCarrot += nb;
+	}
+
+	public bool TakeCarrot(int nb){
+		if(nbCarrot >= nb){
+			nbCarrot -= nb;
+			return true;
+		}
+		return false;
 	}
 }
