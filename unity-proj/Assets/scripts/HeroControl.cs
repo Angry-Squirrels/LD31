@@ -36,7 +36,7 @@ public class HeroControl : MonoBehaviour {
 		if(IsOnFloor())
 			mMovementVector.y = 0;
 
-		if(mMovementVector.x != 0 && mMovementVector.z != 0)
+		if(mMovementVector.magnitude != 0)
 			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 	
 		float tspeed = Mathf.Sqrt(mMovementVector.x * mMovementVector.x + mMovementVector.z * mMovementVector.z);

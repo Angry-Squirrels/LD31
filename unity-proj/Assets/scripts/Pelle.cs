@@ -15,8 +15,8 @@ public class Pelle : MonoBehaviour {
 
 	void OnTriggerEnter(Collider bunny){
 		if (bunny.gameObject.layer == LayerMask.NameToLayer("bunny")){
-			Debug.Log(gameObject.name + " hit " + bunny.name);
-			Debug.DrawRay(transform.position, bunny.transform.position);
+			BunnyAI bunnyScript = bunny.GetComponent<BunnyAI>();
+			bunnyScript.TakeDammage(5);
 		}
 	}
 }

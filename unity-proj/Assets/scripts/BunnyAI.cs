@@ -228,5 +228,11 @@ public class BunnyAI : MonoBehaviour {
 		}
 	}
 
-
+	public void TakeDammage(int dammage){
+		life -= dammage;
+		if(life <= 0){
+			Destroy(gameObject);
+		}
+	}
+	
 }

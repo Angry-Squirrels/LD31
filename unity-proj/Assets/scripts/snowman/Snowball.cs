@@ -45,7 +45,8 @@ public class Snowball : MonoBehaviour {
 		Debug.Log (_other.gameObject.name);
 		if (_other.gameObject.layer == LayerMask.NameToLayer("bunny"))
 		{
-			Debug.Log ("rabbit touched !!");
+			BunnyAI bunnyAi = _other.gameObject.GetComponent<BunnyAI>();
+			bunnyAi.TakeDammage(1);
 			die ();
 		}
 		else if (_other.gameObject.layer == LayerMask.NameToLayer("world"))
