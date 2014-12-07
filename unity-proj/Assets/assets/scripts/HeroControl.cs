@@ -33,9 +33,26 @@ public class HeroControl : MonoBehaviour {
 		if(mMovementVector.magnitude != 0)
 			mCharacterController.transform.rotation = Quaternion.LookRotation(mMovementVector);
 
+		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
+		GameObject closestSlot = null;
+		float minDist = float.MaxValue;
+		foreach(GameObject slot in slots){
+			float dist = Vector3.Distance(slot.transform.position, transform.position + transform.forward*5);
+			if(dist < minDist)
+			{
+				minDist = dist;
+				closestSlot = slot;
+			}
+		}
+
+		if(minDist <= 6){
+			closestSlot.BroadcastMessage("OnSelect");
+		}
+
 	}
 
 	bool IsOnFloor(){
 		return (mCollisionFlags & CollisionFlags.Below) != 0;
 	}
+	
 }
