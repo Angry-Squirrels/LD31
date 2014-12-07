@@ -8,7 +8,7 @@ public class BunnyAI : MonoBehaviour {
 	public float gravity = 3;
 	public float movementSpeed = 10;
 
-	enum BunnyState {Normal, Angry};
+	enum BunnyState {Normal, Angry, Dead};
 
 	private BunnyState mCurrentState;
 	private Vector3 mMovement;
@@ -24,6 +24,11 @@ public class BunnyAI : MonoBehaviour {
 	private float mRotateTimer;
 	private float mTimeToRotate;
 	private float mDistFromCenter = 75;
+
+	private GameObject mCurrentTarget;
+
+	private bool mEating = false;
+	float mEatingTimer = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -55,10 +60,12 @@ public class BunnyAI : MonoBehaviour {
 		else
 			ChangeState(BunnyState.Normal);
 
-		//if(mCurrentState == BunnyState.Normal)
+		if(mCurrentState == BunnyState.Normal)
 			UpdateNormal();
-		//else
-		//	UpdateAngry();
+		else if(mCurrentState == BunnyState.Angry)
+			UpdateAngry();
+		else if(mCurrentState == BunnyState.Dead)
+			UpdateDead();
 
 		mMovement.y -= gravity;
 
@@ -100,9 +107,72 @@ public class BunnyAI : MonoBehaviour {
 	}
 
 	void UpdateAngry(){
+		// getList of carrot slots
+		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
+
+		// gezt closest slot with a carrot
+		GameObject closestsFullSlots = null;
+		float minDist = float.MaxValue;
+
+		foreach (GameObject slot in slots){
+			CarrotSlot slotScript = slot.GetComponent<CarrotSlot>();
+			float dist = Vector3.Distance(slot.transform.position, transform.position);
+			if(slotScript.HasGrownCarrot() &&  dist < minDist){
+				minDist = dist;
+				closestsFullSlots = slot;
+			}
+		}
+
+		if(closestsFullSlots != null)
+			GoTowardSlot(closestsFullSlots);
+		else
+			GotTowardMegaCarrot();
+	}
+
+	void GoTowardSlot (GameObject closestsFullSlots)
+	{
+		mCurrentTarget = closestsFullSlots;
+
+		mSpeed = movementSpeed * 0.75;
+
+		float diffX = closestsFullSlots.transform.position.x - transform.position.x;
+		float diffZ = closestsFullSlots.transform.position.z - transform.position.z;
+		float dist = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
+
+		transform.rotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
+
+		mMovement.x = gameObject.transform.forward.x * mSpeed;
+		mMovement.z = gameObject.transform.forward.z * mSpeed;
+
+		if(dist < 2){
+			mMovement = Vector3.zero;
+			if(!mEating){
+				mEating = true;
+				mEatingTimer = 0;
+			}else{
+				mEatingTimer += Time.deltaTime;
+				if(mEatingTimer > 2.0){
+					StealCarrot();
+				}
+			}
+		}
+		
+	}
+
+	void StealCarrot(){
+		CarrotSlot carrotSlotScript = mCurrentTarget.GetComponent<CarrotSlot>();
+		carrotSlotScript.StealCarrot();
+	}
+
+	void UpdateDead(){
 	}
 
 	bool IsOnFloor(){
 		return (mCollisionFlags & CollisionFlags.Below) != 0;
+	}
+
+	void GotTowardMegaCarrot ()
+	{
+		GameObject megaCarrot = GameObject.FindGameObjectWithTag("MegaCarrot");
 	}
 }

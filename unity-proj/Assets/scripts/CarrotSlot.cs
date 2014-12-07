@@ -53,4 +53,23 @@ public class CarrotSlot : MonoBehaviour {
 	void OnDeselect(){
 		mSelected = false;
 	}
+
+	public bool HasCarrot(){
+		return mHasCarrot;
+	}
+
+	public bool HasGrownCarrot(){
+		if(mCarrotte != null)
+		{
+			Carrot carrotScript = mCarrotte.GetComponent<Carrot>();
+			return carrotScript.GetLevel() >= 1;
+		}
+
+		return false;
+	}
+
+	public void StealCarrot(){
+		mHasCarrot = false;
+		DestroyImmediate(mCarrotte);
+	}
 }
