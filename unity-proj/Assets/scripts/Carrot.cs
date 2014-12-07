@@ -15,7 +15,7 @@ public class Carrot : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mCycleManager = DayNightCycleManager.instance;
-		mDayDuration = mCycleManager.GetDayDuration();
+		mDayDuration = mCycleManager.GetTotalDayDuration();
 		mGrowVector = new Vector3(0.25f,1.0f,0.25f);
 	}
 	

@@ -113,6 +113,8 @@ public class DayNightCycleManager : MonoBehaviour {
 			mChangingDayPart = true; 
 			if (mCycling)
 			{
+				if(part == 3)
+					gameObject.SendMessage("OnNewNight", mCurrentDay);
 				if (onNewCycle != null)
 				{
 					onNewCycle(part);
@@ -163,12 +165,28 @@ public class DayNightCycleManager : MonoBehaviour {
 		return mCurrentDayPart;
 	}
 
-	public float GetDayDuration(){
+	public float GetTotalDayDuration(){
 		return dayTime + crepTime;
 	}
 
-	public float GetNightDuration(){
+	public float GetTotalNightDuration(){
 		return nightTime + aubeTime;
+	}
+
+	public float GetAubeDuration(){
+		return aubeTime;
+	}
+
+	public float GetCrepDuration(){
+		return crepTime;
+	}
+
+	public float GetDayDuration(){
+		return dayTime;
+	}
+
+	public float GetNightDuration(){
+		return nightTime;
 	}
 
 	public void StartCycles(){

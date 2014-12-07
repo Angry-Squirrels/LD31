@@ -56,6 +56,9 @@
      <Compile Include="Assets\scripts\MegaCarrot.cs" />
      <Compile Include="Assets\scripts\MusicHandler.cs" />
      <Compile Include="Assets\scripts\RabbitSpawner.cs" />
+     <Compile Include="Assets\scripts\snowman\Snowball.cs" />
+     <Compile Include="Assets\scripts\snowman\Snowman.cs" />
+     <Compile Include="Assets\scripts\snowman\SnowmanDetector.cs" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-BasicOutline.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-LightedOutline.shader" />
