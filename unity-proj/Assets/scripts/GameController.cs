@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour {
 
 	public void StartGame(){
 		menu.SetActive(false);
-		Instantiate(hero);
+		Instantiate(hero, Vector3.up * 10, Quaternion.identity);
 		mDayManager.StartCycles();
 		BroadcastMessage("GameStart");
 	}

@@ -133,7 +133,7 @@ public class BunnyAI : MonoBehaviour {
 	{
 		mCurrentTarget = closestsFullSlots;
 
-		mSpeed = movementSpeed * 0.75;
+		mSpeed = movementSpeed * 0.75f;
 
 		float diffX = closestsFullSlots.transform.position.x - transform.position.x;
 		float diffZ = closestsFullSlots.transform.position.z - transform.position.z;

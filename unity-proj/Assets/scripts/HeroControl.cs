@@ -31,7 +31,7 @@ public class HeroControl : MonoBehaviour {
 			mMovementVector.y = 0;
 
 		if(mMovementVector.magnitude != 0)
-			mCharacterController.transform.rotation = Quaternion.LookRotation(mMovementVector);
+			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
 		GameObject closestSlot = null;
