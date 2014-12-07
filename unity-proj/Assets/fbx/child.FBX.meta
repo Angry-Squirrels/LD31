@@ -45,6 +45,7 @@ ModelImporter:
     100078: Box001
     100080: Child
     100082: //RootNode
+    100084: Pelle
     400000: Bip001
     400002: Bip001 Footsteps
     400004: Bip001 Head
@@ -87,10 +88,14 @@ ModelImporter:
     400078: Box001
     400080: Child
     400082: //RootNode
+    400084: Pelle
     2300000: Box001
+    2300002: Pelle
     3300000: Box001
+    3300002: Pelle
     4300000: Child
     4300002: Box001
+    4300004: Pelle
     7400000: idle
     7400002: run
     7400004: attack
@@ -272,7 +277,7 @@ ModelImporter:
       takeName: Take 001
       firstFrame: 100
       lastFrame: 125
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
