@@ -23,11 +23,6 @@ public class CarrotSlot : MonoBehaviour {
 			gameObject.transform.Translate(Vector3.down*10);
 			mSelected = false;
 		}
-
-		if(mHasCarrot)
-		{
-			mCarrotte.transform.SetParent(transform);
-		}
 	}
 
 	void OnSelect(){
@@ -36,10 +31,12 @@ public class CarrotSlot : MonoBehaviour {
 
 		if(Input.GetButtonDown("Action")){
 			if(!mHasCarrot){
+				Debug.Log("Plante une carrotte");
 				mHasCarrot = true;
-				GameObject carotte = (GameObject)Instantiate(carrotToInstantiate);
-				mCarrotte = carotte;
-				mCarrotte.transform.position.Set(transform.position.x, transform.position.y, transform.position.z);
+				mCarrotte = (GameObject)Instantiate(carrotToInstantiate);
+				mCarrotte.transform.SetParent(transform);
+				mCarrotte.transform.position = transform.position;
+				mCarrotte.transform.Translate(Vector3.up * 2);
 			}
 		}
 	}
