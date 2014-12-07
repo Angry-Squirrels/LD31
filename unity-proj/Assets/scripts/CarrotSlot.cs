@@ -5,6 +5,9 @@ public class CarrotSlot : MonoBehaviour {
 
 	public GameObject carrotToInstantiate;
 
+	public Shader selectShader;
+	public Shader normalShader;
+
 	float mBaseY;
 	bool mSelected;
 	bool mHasCarrot;
@@ -22,14 +25,14 @@ public class CarrotSlot : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(mSelected){
-			gameObject.transform.Translate(Vector3.down*10);
 			mSelected = false;
+			renderer.material.shader = normalShader;
 		}
 	}
 
 	void OnSelect(){
 		mSelected = true;
-		gameObject.transform.Translate(Vector3.up*10);
+		renderer.material.shader = selectShader;
 
 		if(Input.GetButtonDown("Action")){
 			if(!mHasCarrot && mGameController.TakeCarrot(1)){

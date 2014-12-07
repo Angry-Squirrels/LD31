@@ -24,6 +24,7 @@ public class HeroControl : MonoBehaviour {
 	
 		mMovementVector.x = -Input.GetAxis("Horizontal");
 		mMovementVector.z = -Input.GetAxis("Vertical");
+
 		float prevVitY = mMovementVector.y;
 		mMovementVector.Normalize();
 		mMovementVector *= moveSpeed;
@@ -39,10 +40,13 @@ public class HeroControl : MonoBehaviour {
 			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 	
 		float tspeed = Mathf.Sqrt(mMovementVector.x * mMovementVector.x + mMovementVector.z * mMovementVector.z);
-		if(tspeed > 0.03 && !childAnim.IsPlaying("run")){
-			childAnim.Play("run");
-		}else if(tspeed < 0.03 && !childAnim.IsPlaying("idle")){
-			childAnim.Play("idle");
+
+		if(!childAnim.IsPlaying("attack")){
+			if(tspeed > 0.03 && !childAnim.IsPlaying("run")){
+				childAnim.Play("run");
+			}else if(tspeed < 0.03 && !childAnim.IsPlaying("idle")){
+				childAnim.Play("idle");
+			}
 		}
 
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
@@ -57,9 +61,14 @@ public class HeroControl : MonoBehaviour {
 			}
 		}
 
+		// on peut planter une carrotte
 		if(minDist <= 10){
 			closestSlot.BroadcastMessage("OnSelect");
 		}
+		// sinon on peut attaquer
+
+		if(Input.GetButtonDown("Attack"))
+			childAnim.Play("attack");
 
 	}
 

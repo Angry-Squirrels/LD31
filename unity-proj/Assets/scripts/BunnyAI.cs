@@ -10,6 +10,9 @@ public class BunnyAI : MonoBehaviour {
 	public float mEatRate = 2.0f;
 	public float minDistToFlee = 10;
 
+	public int maxLife = 10;
+	public int life = 10;
+
 	enum BunnyState {Normal, Angry, Dead};
 
 	private BunnyState mCurrentState;
@@ -207,7 +210,7 @@ public class BunnyAI : MonoBehaviour {
 		mMovement.x = gameObject.transform.forward.x * mSpeed;
 		mMovement.z = gameObject.transform.forward.z * mSpeed;
 
-		if(dist < 4){
+		if(dist < 6){
 			mMovement = Vector3.zero;
 
 			if(!mEating){
@@ -222,4 +225,6 @@ public class BunnyAI : MonoBehaviour {
 			}
 		}
 	}
+
+
 }

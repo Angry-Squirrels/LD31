@@ -55,6 +55,7 @@
      <Compile Include="Assets\scripts\HeroControl.cs" />
      <Compile Include="Assets\scripts\MegaCarrot.cs" />
      <Compile Include="Assets\scripts\MusicHandler.cs" />
+     <Compile Include="Assets\scripts\Pelle.cs" />
      <Compile Include="Assets\scripts\RabbitSpawner.cs" />
      <Compile Include="Assets\scripts\snowman\Snowball.cs" />
      <Compile Include="Assets\scripts\snowman\Snowman.cs" />
@@ -63,6 +64,7 @@
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-BasicOutline.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-LightedOutline.shader" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Lighted.shader" />
+     <None Include="Assets\shaders\outline.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
  </Reference>
