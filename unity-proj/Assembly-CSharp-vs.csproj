@@ -57,6 +57,7 @@
      <Compile Include="Assets\scripts\MusicHandler.cs" />
      <Compile Include="Assets\scripts\Pelle.cs" />
      <Compile Include="Assets\scripts\RabbitSpawner.cs" />
+     <Compile Include="Assets\scripts\ShovelLinker.cs" />
      <Compile Include="Assets\scripts\snowman\Snowball.cs" />
      <Compile Include="Assets\scripts\snowman\Snowman.cs" />
      <Compile Include="Assets\scripts\snowman\SnowmanDetector.cs" />
