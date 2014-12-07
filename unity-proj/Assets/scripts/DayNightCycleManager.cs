@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public delegate void newCycle(int _cycleName);
+
 public class DayNightCycleManager : MonoBehaviour {
 
-	public static DayNightCycleManager instance; 
+	public static DayNightCycleManager instance;
+
+	public event newCycle onNewCycle;
 
 	// time in sec for each day phase
 	public float aubeTime = 10.0f;
@@ -71,6 +75,12 @@ public class DayNightCycleManager : MonoBehaviour {
 		mCurrentTransitionTime = 0;
 		mChangingDayPart = false;
 		mCycling = false;
+
+		if (onNewCycle != null)
+		{
+			print ("start main theme");
+			onNewCycle(4);
+		}
 	}
 	
 	// Update is called once per frame
@@ -101,6 +111,13 @@ public class DayNightCycleManager : MonoBehaviour {
 		if(mCurrentDayPart != part){
 			mCurrentDayPart = part;
 			mChangingDayPart = true; 
+			if (mCycling)
+			{
+				if (onNewCycle != null)
+				{
+					onNewCycle(part);
+				}
+			}
 		}
 	}
 	
@@ -156,6 +173,10 @@ public class DayNightCycleManager : MonoBehaviour {
 
 	public void StartCycles(){
 		mCycling = true;
+		if (onNewCycle != null)
+		{
+			onNewCycle(1);
+		}
 	}
 
 	public void StopCycles(){
