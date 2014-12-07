@@ -43,7 +43,7 @@ public class CarrotSlot : MonoBehaviour {
 				if(carrot.GetLevel() > 0){
 					DestroyImmediate(mCarrotte);
 					mHasCarrot = false;
-					int carrotTaken = (int)(carrot.GetLevel() * (carrot.GetLevel() - 1) + 1);
+					int carrotTaken = (int)(carrot.GetLevel() * Mathf.Ceil(carrot.GetLevel() * 0.5f) + 1);
 					mGameController.GetCarrot(carrotTaken);
 				}
 			}

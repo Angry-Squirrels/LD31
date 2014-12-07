@@ -7,6 +7,8 @@ public class BunnyAI : MonoBehaviour {
 
 	public float gravity = 3;
 	public float movementSpeed = 10;
+	public float mEatRate = 2.0f;
+	public float minDistToFlee = 10;
 
 	enum BunnyState {Normal, Angry, Dead};
 
@@ -24,6 +26,7 @@ public class BunnyAI : MonoBehaviour {
 	private float mRotateTimer;
 	private float mTimeToRotate;
 	private float mDistFromCenter = 75;
+	private bool mFleeing = false;
 
 	private GameObject mCurrentTarget;
 
@@ -100,6 +103,17 @@ public class BunnyAI : MonoBehaviour {
 			mDestRotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
 		}
 
+		//flee from hero
+		GameObject hero = GameObject.FindGameObjectWithTag("Player");
+		float distFromPlayer = Vector3.Distance(hero.transform.position, transform.position);
+
+		if(distFromPlayer < minDistToFlee){
+			Vector3 fleeVector = transform.position - hero.transform.position;
+			fleeVector.y = 0;
+			mDestRotation =  Quaternion.LookRotation(fleeVector);
+			mSpeed = movementSpeed * 1.5f;
+		}
+
 		gameObject.transform.rotation = Quaternion.Lerp(mOriginRotation, mDestRotation, t);
 
 		mMovement.x = gameObject.transform.forward.x * mSpeed;
@@ -151,10 +165,15 @@ public class BunnyAI : MonoBehaviour {
 				mEatingTimer = 0;
 			}else{
 				mEatingTimer += Time.deltaTime;
-				if(mEatingTimer > 2.0){
+				if(mEatingTimer > mEatRate){
 					StealCarrot();
+					mEating = false;
+					mEatingTimer = 0;
 				}
 			}
+		}else{
+			mEating = false;
+			mEatingTimer = 0;
 		}
 		
 	}
@@ -173,6 +192,34 @@ public class BunnyAI : MonoBehaviour {
 
 	void GotTowardMegaCarrot ()
 	{
-		GameObject megaCarrot = GameObject.FindGameObjectWithTag("MegaCarrot");
+		GameObject megaCarrot = GameObject.FindGameObjectWithTag("BigCarrot");
+
+		MegaCarrot megaCarrotScript = megaCarrot.GetComponent<MegaCarrot>();
+
+		mSpeed = movementSpeed * 0.75f;
+		
+		float diffX = megaCarrot.transform.position.x - transform.position.x;
+		float diffZ = megaCarrot.transform.position.z - transform.position.z;
+		float dist = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
+		
+		transform.rotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
+		
+		mMovement.x = gameObject.transform.forward.x * mSpeed;
+		mMovement.z = gameObject.transform.forward.z * mSpeed;
+
+		if(dist < 4){
+			mMovement = Vector3.zero;
+
+			if(!mEating){
+				mEating = true;
+				mEatingTimer = 0;
+			}else{
+				mEatingTimer += Time.deltaTime;
+				if(mEatingTimer > mEatRate){
+					mEatingTimer = 0;
+					megaCarrotScript.TakeDammage();
+				}
+			}
+		}
 	}
 }
