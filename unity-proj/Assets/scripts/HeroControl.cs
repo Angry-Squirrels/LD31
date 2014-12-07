@@ -8,6 +8,7 @@ public class HeroControl : MonoBehaviour {
 	public float moveSpeed;
 	public float gravity;
 	public Animation childAnim;
+	public Collider shovel;
 
 	private CharacterController mCharacterController;
 	private Vector3 mMovementVector;
@@ -47,6 +48,10 @@ public class HeroControl : MonoBehaviour {
 			}else if(tspeed < 0.03 && !childAnim.IsPlaying("idle")){
 				childAnim.Play("idle");
 			}
+
+			shovel.enabled = false;
+		}else{
+			shovel.enabled = true;
 		}
 
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
