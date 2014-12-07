@@ -196,31 +196,33 @@ public class BunnyAI : MonoBehaviour {
 	void GotTowardMegaCarrot ()
 	{
 		GameObject megaCarrot = GameObject.FindGameObjectWithTag("BigCarrot");
+		if (megaCarrot != null)
+		{
+			MegaCarrot megaCarrotScript = megaCarrot.GetComponent<MegaCarrot>();
 
-		MegaCarrot megaCarrotScript = megaCarrot.GetComponent<MegaCarrot>();
+			mSpeed = movementSpeed * 0.75f;
+			
+			float diffX = megaCarrot.transform.position.x - transform.position.x;
+			float diffZ = megaCarrot.transform.position.z - transform.position.z;
+			float dist = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
+			
+			transform.rotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
+			
+			mMovement.x = gameObject.transform.forward.x * mSpeed;
+			mMovement.z = gameObject.transform.forward.z * mSpeed;
 
-		mSpeed = movementSpeed * 0.75f;
-		
-		float diffX = megaCarrot.transform.position.x - transform.position.x;
-		float diffZ = megaCarrot.transform.position.z - transform.position.z;
-		float dist = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
-		
-		transform.rotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
-		
-		mMovement.x = gameObject.transform.forward.x * mSpeed;
-		mMovement.z = gameObject.transform.forward.z * mSpeed;
+			if(dist < 6){
+				mMovement = Vector3.zero;
 
-		if(dist < 6){
-			mMovement = Vector3.zero;
-
-			if(!mEating){
-				mEating = true;
-				mEatingTimer = 0;
-			}else{
-				mEatingTimer += Time.deltaTime;
-				if(mEatingTimer > mEatRate){
+				if(!mEating){
+					mEating = true;
 					mEatingTimer = 0;
-					megaCarrotScript.TakeDammage();
+				}else{
+					mEatingTimer += Time.deltaTime;
+					if(mEatingTimer > mEatRate){
+						mEatingTimer = 0;
+						megaCarrotScript.TakeDammage();
+					}
 				}
 			}
 		}
