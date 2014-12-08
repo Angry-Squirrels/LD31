@@ -52,6 +52,7 @@
      <Compile Include="Assets\scripts\CarrotSlot.cs" />
      <Compile Include="Assets\scripts\DayNightCycleManager.cs" />
      <Compile Include="Assets\scripts\GameController.cs" />
+     <Compile Include="Assets\scripts\HeroAnimEvent.cs" />
      <Compile Include="Assets\scripts\HeroControl.cs" />
      <Compile Include="Assets\scripts\LapinAnimEvent.cs" />
      <Compile Include="Assets\scripts\MegaCarrot.cs" />

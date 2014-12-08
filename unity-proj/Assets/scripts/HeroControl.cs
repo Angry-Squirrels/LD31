@@ -32,26 +32,24 @@ public class HeroControl : MonoBehaviour {
 
 		mMovementVector.y = prevVitY - gravity;
 
-		mCollisionFlags = mCharacterController.Move(mMovementVector * Time.deltaTime);
+		if(!childAnim.IsPlaying("catch") && !childAnim.IsPlaying("dig"))
+			mCollisionFlags = mCharacterController.Move(mMovementVector * Time.deltaTime);
 
 		if(IsOnFloor())
 			mMovementVector.y = 0;
-
-		if(mMovementVector.magnitude != 0)
+		 
+		if(mMovementVector.magnitude != 0 && !childAnim.IsPlaying("catch") && !childAnim.IsPlaying("dig"))
 			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 	
 		float tspeed = Mathf.Sqrt(mMovementVector.x * mMovementVector.x + mMovementVector.z * mMovementVector.z);
 
-		if(!childAnim.IsPlaying("attack")){
+		if(!childAnim.IsPlaying("attack") && !childAnim.IsPlaying("catch") && !childAnim.IsPlaying("dig")){
 			if(tspeed > 0.03 && !childAnim.IsPlaying("run")){
 				childAnim.Play("run");
 			}else if(tspeed < 0.03 && !childAnim.IsPlaying("idle")){
 				childAnim.Play("idle");
 			}
-
 			shovel.enabled = false;
-		}else{
-			shovel.enabled = true;
 		}
 
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
@@ -68,6 +66,13 @@ public class HeroControl : MonoBehaviour {
 
 		// on peut planter une carrotte
 		if(minDist <= 10){
+			CarrotSlot theSlot = closestSlot.GetComponent<CarrotSlot>();
+			if(Input.GetButtonDown("Action")){
+				if(!theSlot.HasCarrot())
+					childAnim.Play("catch");
+				else if(theSlot.HasGrownCarrot())
+					childAnim.Play("dig");
+			}
 			closestSlot.BroadcastMessage("OnSelect");
 		}
 		// sinon on peut attaquer
@@ -75,6 +80,14 @@ public class HeroControl : MonoBehaviour {
 		if(Input.GetButtonDown("Attack"))
 			childAnim.Play("attack");
 
+	}
+
+	public void PelleActive(){
+		shovel.enabled = true;
+	}
+
+	public void PelleInactive(){
+		shovel.enabled = false;
 	}
 
 	bool IsOnFloor(){
