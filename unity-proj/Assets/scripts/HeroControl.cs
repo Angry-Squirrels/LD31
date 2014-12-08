@@ -85,9 +85,6 @@ public class HeroControl : MonoBehaviour {
 
 		if(minDist >= SnowManDistFromCarrot)
 			MakeSnowMan();
-		else
-			Debug.Log("too close from carrot");
-
 
 		if(Input.GetButtonDown("Attack"))
 			childAnim.Play("attack");
@@ -100,7 +97,7 @@ public class HeroControl : MonoBehaviour {
 		GameObject[] snowmen = GameObject.FindGameObjectsWithTag("Snowman");
 		float minDist = float.MaxValue;
 		foreach(GameObject snowman in snowmen){
-			float dist = Vector3.Distance(snowman.transform.position, transform.position+transform.forward * 5);
+			float dist = Vector3.Distance(snowman.transform.position, transform.position+transform.forward * 7);
 			if(dist < minDist)
 				minDist = dist;
 		}
@@ -114,9 +111,8 @@ public class HeroControl : MonoBehaviour {
 		   Input.GetButtonDown("Action"))
 		{
 			if(mGameController.TakeCarrot(SnowmanCarrotCost)){
-
-				Instantiate(SnowManPrefab, transform.position + transform.forward*5, Quaternion.identity);
-
+				Instantiate(SnowManPrefab, transform.position + transform.forward*7, Quaternion.identity);
+				childAnim.Play("catch");
 			}
 		}
 

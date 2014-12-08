@@ -10,10 +10,20 @@ public class Carrot : MonoBehaviour {
 	int mAge = 0;
 	Vector3 mGrowVector;
 
-	public float growSpeed;
+	public float maxTranslate = 10;
+	public Animation anim;
+
+	float mTotalTranslate = 0;
+	float mStartY = 0;
+	float mEndY = 0;
+
+	bool mReady = false;
 
 	// Use this for initialization
 	void Start () {
+		mGrowingTime = 0;
+		mStartY = transform.position.y;
+		mEndY = mStartY + maxTranslate;
 		mCycleManager = DayNightCycleManager.instance;
 		mDayDuration = mCycleManager.GetTotalDayDuration();
 		mGrowVector = new Vector3(0.25f,1.0f,0.25f);
@@ -28,8 +38,19 @@ public class Carrot : MonoBehaviour {
 				mAge = newAge;
 				OnNewAge();
 			}
-			transform.Translate(Vector3.up * growSpeed * Time.deltaTime / mDayDuration);
-			transform.localScale += mGrowVector * growSpeed * Time.deltaTime / mDayDuration;
+
+			float t = mGrowingTime / mDayDuration;
+			float y = Mathf.Lerp(mStartY, mEndY, t);
+			transform.position.Set(transform.position.x, y, transform.position.z);
+
+			if(t >= 1){
+				t = 1;
+				if(!mReady){
+					mReady = true;
+					anim.Play("ready");
+				}
+			}
+
 		}
 	} 
 
