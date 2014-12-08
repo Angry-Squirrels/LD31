@@ -101,17 +101,19 @@ public class HeroControl : MonoBehaviour {
 			if(dist < minDist)
 				minDist = dist;
 		}
-		Debug.Log(minDist + "/ " + MinDistBetweenSnowMen);
+		//Debug.Log(minDist + "/ " + MinDistBetweenSnowMen);
+		/*
 		if(minDist >= MinDistBetweenSnowMen)
 			Debug.Log("can make a snow man");
 		else
 			Debug.Log("another snowman is too close");
+			*/
 
 		if(minDist >= MinDistBetweenSnowMen && 
 		   Input.GetButtonDown("Action"))
 		{
 			if(mGameController.TakeCarrot(SnowmanCarrotCost)){
-				Instantiate(SnowManPrefab, transform.position + transform.forward*7, Quaternion.identity);
+				Instantiate(SnowManPrefab, transform.position + transform.forward*8 - transform.up*2, Quaternion.identity);
 				childAnim.Play("catch");
 			}
 		}
