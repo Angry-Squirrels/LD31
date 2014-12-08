@@ -28,7 +28,6 @@ public class RabbitSpawner : MonoBehaviour {
 	}
 
 	void OnNewNight(){
-		Debug.Log("new night");
 		SpawnBunny();
 	}
 

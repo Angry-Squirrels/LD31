@@ -31,4 +31,8 @@ public class LapinAnimEvent : MonoBehaviour {
 	public void OnLand(){
 		ai.LandJump();
 	}
+
+	public void OnTransformEnded(){
+		ai.TransformEnded();
+	}
 }

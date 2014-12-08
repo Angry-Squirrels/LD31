@@ -18,7 +18,7 @@ public class BunnyAI : MonoBehaviour {
 	public int maxLife = 10;
 	public int life = 10;
 
-	enum BunnyState {Normal, Angry, Dead};
+	enum BunnyState {Normal, Transforming, Angry, Dead};
 
 	private BunnyState mCurrentState;
 	private Vector3 mMovement;
@@ -37,7 +37,7 @@ public class BunnyAI : MonoBehaviour {
 	private bool mFleeing = false;
 	private float mAir = 0.0f;
 	private Vector3 mFinalMoveVector;
-	private bool mEnteredAngry = false;
+	private bool mStartedTransform = false;
 
 	private GameObject mCurrentTarget;
 
@@ -46,12 +46,10 @@ public class BunnyAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log("BUNNY START! " + (mignon != null) + " " + (mechant != null) + " " + (renderer != null));
 		mMovement = new Vector3();
 		mFinalMoveVector = new Vector3();
 		mCurrentState = BunnyState.Normal;
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
-		mEnteredAngry = false;
 		mDest = new Vector3();
 		ChangeRandomly ();
 	}
@@ -85,10 +83,12 @@ public class BunnyAI : MonoBehaviour {
 	void Update () {
 		int timeOfDay = DayNightCycleManager.instance.GetTimerOfDay();
 
-		if (timeOfDay == 0 || timeOfDay == 3)
-			ChangeState(BunnyState.Angry);
-		else
+		if ((timeOfDay == 0 || timeOfDay == 3) && !mStartedTransform)
+			ChangeState(BunnyState.Transforming);
+		else if(timeOfDay == 1 || timeOfDay == 2){
 			ChangeState(BunnyState.Normal);
+			mStartedTransform = false;
+		}
 
 		if(mCurrentState == BunnyState.Normal)
 			UpdateNormal();
@@ -96,6 +96,8 @@ public class BunnyAI : MonoBehaviour {
 			UpdateAngry();
 		else if(mCurrentState == BunnyState.Dead)
 			UpdateDead();
+		else if(mCurrentState == BunnyState.Transforming)
+			UpdateTransforming();
 
 		mMovement.y -= gravity;
 
@@ -117,7 +119,7 @@ public class BunnyAI : MonoBehaviour {
 	
 	// move arround randomly
 	void UpdateNormal(){
-		mEnteredAngry = false;
+
 		mNewDestCounter += Time.deltaTime;
 		if(mNewDestCounter >= mNewDestTime)
 			ChangeRandomly();
@@ -160,18 +162,28 @@ public class BunnyAI : MonoBehaviour {
 			renderer.material.SetTexture(0, mignon);
 	}
 
-	void UpdateAngry(){
-
-		if(renderer.material.mainTexture != mechant)
+	void UpdateTransforming(){
+		if(!mStartedTransform){
+			animation["wake"].speed = Random.Range(0.5f, 1.0f);
+			animation.Play("wake");
+			mStartedTransform = true;
 			renderer.material.SetTexture(0, mechant);
 
-		if(!mEnteredAngry){
-			mEnteredAngry = true;
-			animation.Play("wake");
-		}
+			mMovement.x = 0;
+			mMovement.z = 0;
 
-		if(animation.IsPlaying("wake"))
-			return;
+			GameObject megaCarrot = GameObject.FindGameObjectWithTag("BigCarrot");
+			float diffX = transform.position.x - megaCarrot.transform.position.x;
+			float diffZ = transform.position.z - megaCarrot.transform.position.z;
+			transform.rotation = Quaternion.LookRotation(new Vector3(-diffX, 0, -diffZ));
+		}
+	}
+
+	public void TransformEnded(){
+		ChangeState(BunnyState.Angry);
+	}
+
+	void UpdateAngry(){
 
 		// getList of carrot slots
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");

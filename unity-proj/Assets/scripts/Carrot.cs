@@ -34,7 +34,7 @@ public class Carrot : MonoBehaviour {
 	} 
 
 	void OnNewAge(){
-		Debug.Log("Carrot level " + mAge);
+
 	}
 
 	public int GetLevel(){
