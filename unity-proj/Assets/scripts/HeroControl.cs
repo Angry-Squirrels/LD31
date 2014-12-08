@@ -66,7 +66,6 @@ public class HeroControl : MonoBehaviour {
 
 		// on peut planter une carrotte
 		if(minDist <= 10){
-			closestSlot.BroadcastMessage("OnSelect");
 			CarrotSlot theSlot = closestSlot.GetComponent<CarrotSlot>();
 			if(Input.GetButtonDown("Action")){
 				if(!theSlot.HasCarrot())
@@ -74,6 +73,7 @@ public class HeroControl : MonoBehaviour {
 				else if(theSlot.HasGrownCarrot())
 					childAnim.Play("dig");
 			}
+			closestSlot.BroadcastMessage("OnSelect");
 		}
 		// sinon on peut attaquer
 
