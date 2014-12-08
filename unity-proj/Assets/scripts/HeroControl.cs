@@ -111,7 +111,7 @@ public class HeroControl : MonoBehaviour {
 		   Input.GetButtonDown("Action"))
 		{
 			if(mGameController.TakeCarrot(SnowmanCarrotCost)){
-				Instantiate(SnowManPrefab, transform.position + transform.forward*7, Quaternion.identity);
+				Instantiate(SnowManPrefab, transform.position + transform.forward*8 - transform.up*2, Quaternion.identity);
 				childAnim.Play("catch");
 			}
 		}
