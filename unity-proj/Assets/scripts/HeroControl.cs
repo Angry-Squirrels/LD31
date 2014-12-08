@@ -8,6 +8,7 @@ public class HeroControl : MonoBehaviour {
 	public float moveSpeed;
 	public float gravity;
 	public Animation childAnim;
+	public Collider shovel;
 
 	private CharacterController mCharacterController;
 	private Vector3 mMovementVector;
@@ -36,7 +37,7 @@ public class HeroControl : MonoBehaviour {
 		if(IsOnFloor())
 			mMovementVector.y = 0;
 
-		if(mMovementVector.x != 0 && mMovementVector.z != 0)
+		if(mMovementVector.magnitude != 0)
 			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 	
 		float tspeed = Mathf.Sqrt(mMovementVector.x * mMovementVector.x + mMovementVector.z * mMovementVector.z);
@@ -47,6 +48,10 @@ public class HeroControl : MonoBehaviour {
 			}else if(tspeed < 0.03 && !childAnim.IsPlaying("idle")){
 				childAnim.Play("idle");
 			}
+
+			shovel.enabled = false;
+		}else{
+			shovel.enabled = true;
 		}
 
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");

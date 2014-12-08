@@ -14,9 +14,11 @@ public class Snowman : MonoBehaviour {
 	private float fireTime = 0;
 	public Transform launchPoint;
 
+	List<Transform> mRabbitToRemove;
 	// Use this for initialization
 	void Start ()
 	{
+		mRabbitToRemove = new List<Transform>();
 		reachableRabbits = new List<Transform> ();
 		snowballs = new List<Snowball> ();
 		instantiateSnowballs ();
@@ -73,6 +75,11 @@ public class Snowman : MonoBehaviour {
 
 		foreach (Transform trsf in reachableRabbits)
 		{
+			if(trsf == null){
+				mRabbitToRemove.Add(trsf);
+				continue;
+			}
+
 			float distance = Vector3.Distance(transform.position, trsf.position);
 			if (distance < minDistance)
 			{
@@ -80,6 +87,9 @@ public class Snowman : MonoBehaviour {
 				rabbit = trsf;
 			}
 		}
+
+		while(mRabbitToRemove.Count > 0)
+			mRabbitToRemove.RemoveAt(0);
 
 		return rabbit;
 	}

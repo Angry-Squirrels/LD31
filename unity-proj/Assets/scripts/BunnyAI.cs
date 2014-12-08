@@ -6,14 +6,19 @@ using System.Collections;
 public class BunnyAI : MonoBehaviour {
 
 	public float gravity = 3;
-	public float movementSpeed = 10;
+	public float movementSpeed = 25;
 	public float mEatRate = 2.0f;
 	public float minDistToFlee = 10;
+	public Animation animation;
+
+	public SkinnedMeshRenderer renderer;
+	public Texture mignon;
+	public Texture mechant;
 
 	public int maxLife = 10;
 	public int life = 10;
 
-	enum BunnyState {Normal, Angry, Dead};
+	enum BunnyState {Normal, Transforming, Angry, Dead};
 
 	private BunnyState mCurrentState;
 	private Vector3 mMovement;
@@ -30,6 +35,9 @@ public class BunnyAI : MonoBehaviour {
 	private float mTimeToRotate;
 	private float mDistFromCenter = 75;
 	private bool mFleeing = false;
+	private float mAir = 0.0f;
+	private Vector3 mFinalMoveVector;
+	private bool mStartedTransform = false;
 
 	private GameObject mCurrentTarget;
 
@@ -39,32 +47,48 @@ public class BunnyAI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mMovement = new Vector3();
+		mFinalMoveVector = new Vector3();
 		mCurrentState = BunnyState.Normal;
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
-
 		mDest = new Vector3();
 		ChangeRandomly ();
 	}
 
 	void ChangeRandomly ()
 	{
-		mNewDestTime = Random.Range (1.0f, 3.0f);
+		int moveMode = Random.Range(0,2);
+
+		// idle
+		if(moveMode == 0)
+		{
+			mNewDestTime = Random.Range(1.0f, 3.0f);
+			mSpeed = 0;
+			mTimeToRotate = 1.0f;
+			if(!animation.IsPlaying("idle"))
+				animation.Play("idle");
+		}else{
+			mNewDestTime = Random.Range (3.0f, 6.0f);
+			mSpeed = movementSpeed;
+			mTimeToRotate = Random.Range(0.5f,2.0f);
+			if(!animation.IsPlaying("run"))
+				animation.Play("run");
+		}
 		mNewDestCounter = 0;
-		mSpeed = Random.Range (0, movementSpeed);
 		mDestRotation = Quaternion.Euler(0, Random.Range (0, 360), 0);
 		mOriginRotation = gameObject.transform.rotation;
 		mRotateTimer = 0;
-		mTimeToRotate = Random.Range(0.5f,2.0f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		int timeOfDay = DayNightCycleManager.instance.GetTimerOfDay();
 
-		if (timeOfDay == 0 || timeOfDay == 3)
-			ChangeState(BunnyState.Angry);
-		else
+		if ((timeOfDay == 0 || timeOfDay == 3) && !mStartedTransform)
+			ChangeState(BunnyState.Transforming);
+		else if(timeOfDay == 1 || timeOfDay == 2){
 			ChangeState(BunnyState.Normal);
+			mStartedTransform = false;
+		}
 
 		if(mCurrentState == BunnyState.Normal)
 			UpdateNormal();
@@ -72,10 +96,16 @@ public class BunnyAI : MonoBehaviour {
 			UpdateAngry();
 		else if(mCurrentState == BunnyState.Dead)
 			UpdateDead();
+		else if(mCurrentState == BunnyState.Transforming)
+			UpdateTransforming();
 
 		mMovement.y -= gravity;
 
-		mCollisionFlags = mCharacterController.Move(mMovement * Time.deltaTime);
+		mFinalMoveVector.x = mMovement.x * mAir;
+		mFinalMoveVector.z = mMovement.z * mAir;
+		mFinalMoveVector.y = mMovement.y;
+
+		mCollisionFlags = mCharacterController.Move(mFinalMoveVector * Time.deltaTime);
 
 		if(IsOnFloor())
 			mMovement.y = 0;
@@ -89,6 +119,7 @@ public class BunnyAI : MonoBehaviour {
 	
 	// move arround randomly
 	void UpdateNormal(){
+
 		mNewDestCounter += Time.deltaTime;
 		if(mNewDestCounter >= mNewDestTime)
 			ChangeRandomly();
@@ -96,6 +127,8 @@ public class BunnyAI : MonoBehaviour {
 		float t = mRotateTimer / mTimeToRotate;
 		if(t > 1)
 			t = 1;
+
+		animation["run"].speed = 1.0f;
 
 		//get closer to game center
 		float fieldDist = Vector3.Distance(gameObject.transform.position, Vector3.zero);
@@ -114,16 +147,44 @@ public class BunnyAI : MonoBehaviour {
 			Vector3 fleeVector = transform.position - hero.transform.position;
 			fleeVector.y = 0;
 			mDestRotation =  Quaternion.LookRotation(fleeVector);
-			mSpeed = movementSpeed * 1.5f;
+			mSpeed = movementSpeed * 2.0f;
+			animation["run"].speed = 2.0f;
+			if(!animation.IsPlaying("run"))
+				animation.Play("run");
 		}
 
 		gameObject.transform.rotation = Quaternion.Lerp(mOriginRotation, mDestRotation, t);
 
 		mMovement.x = gameObject.transform.forward.x * mSpeed;
 		mMovement.z = gameObject.transform.forward.z * mSpeed;
+
+		if(renderer.material.mainTexture != mignon)
+			renderer.material.SetTexture(0, mignon);
+	}
+
+	void UpdateTransforming(){
+		if(!mStartedTransform){
+			animation["wake"].speed = Random.Range(0.5f, 1.0f);
+			animation.Play("wake");
+			mStartedTransform = true;
+			renderer.material.SetTexture(0, mechant);
+
+			mMovement.x = 0;
+			mMovement.z = 0;
+
+			GameObject megaCarrot = GameObject.FindGameObjectWithTag("BigCarrot");
+			float diffX = transform.position.x - megaCarrot.transform.position.x;
+			float diffZ = transform.position.z - megaCarrot.transform.position.z;
+			transform.rotation = Quaternion.LookRotation(new Vector3(-diffX, 0, -diffZ));
+		}
+	}
+
+	public void TransformEnded(){
+		ChangeState(BunnyState.Angry);
 	}
 
 	void UpdateAngry(){
+
 		// getList of carrot slots
 		GameObject[] slots = GameObject.FindGameObjectsWithTag("CarrotSlot");
 
@@ -140,6 +201,11 @@ public class BunnyAI : MonoBehaviour {
 			}
 		}
 
+		animation["run"].speed = 2.0f;
+
+		if(mMovement.magnitude > 1.0f && !animation.IsPlaying("run"))
+			animation.Play("run");
+
 		if(closestsFullSlots != null)
 			GoTowardSlot(closestsFullSlots);
 		else
@@ -150,7 +216,7 @@ public class BunnyAI : MonoBehaviour {
 	{
 		mCurrentTarget = closestsFullSlots;
 
-		mSpeed = movementSpeed * 0.75f;
+		mSpeed = movementSpeed * 2.0f;
 
 		float diffX = closestsFullSlots.transform.position.x - transform.position.x;
 		float diffZ = closestsFullSlots.transform.position.z - transform.position.z;
@@ -166,6 +232,7 @@ public class BunnyAI : MonoBehaviour {
 			if(!mEating){
 				mEating = true;
 				mEatingTimer = 0;
+				animation.Play("eat");
 			}else{
 				mEatingTimer += Time.deltaTime;
 				if(mEatingTimer > mEatRate){
@@ -200,7 +267,7 @@ public class BunnyAI : MonoBehaviour {
 		{
 			MegaCarrot megaCarrotScript = megaCarrot.GetComponent<MegaCarrot>();
 
-			mSpeed = movementSpeed * 0.75f;
+			mSpeed = movementSpeed * 2.0f;
 			
 			float diffX = megaCarrot.transform.position.x - transform.position.x;
 			float diffZ = megaCarrot.transform.position.z - transform.position.z;
@@ -217,6 +284,7 @@ public class BunnyAI : MonoBehaviour {
 				if(!mEating){
 					mEating = true;
 					mEatingTimer = 0;
+					animation.Play("eat");
 				}else{
 					mEatingTimer += Time.deltaTime;
 					if(mEatingTimer > mEatRate){
@@ -228,5 +296,23 @@ public class BunnyAI : MonoBehaviour {
 		}
 	}
 
+	public void TakeDammage(int dammage){
+		life -= dammage;
+		if(life <= 0){
+			Destroy(gameObject);
+		}
+	}
 
+	public void InAir(){
+		mAir = 1.0f;
+	}
+
+	public void LandJump(){
+		mAir = 0.0f;
+	}
+
+	public bool IsAngry(){
+		return mCurrentState == BunnyState.Angry;
+	}
+	
 }

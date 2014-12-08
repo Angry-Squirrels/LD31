@@ -28,7 +28,6 @@ public class RabbitSpawner : MonoBehaviour {
 	}
 
 	void OnNewNight(){
-		Debug.Log("new night");
 		SpawnBunny();
 	}
 
@@ -36,7 +35,6 @@ public class RabbitSpawner : MonoBehaviour {
 	void Start () {
 		mSpawnCounter = 0;
 		mStarted = false;
-
 	}
 	
 	// Update is called once per frame
@@ -64,12 +62,10 @@ public class RabbitSpawner : MonoBehaviour {
 
 	void SpawnBunny ()
 	{
-
-		GameObject[] spawners = GameObject.FindGameObjectsWithTag("BunnySpawner");
-		int spawnerIndex = (int)Random.Range(0, spawners.Length);
-		GameObject spawner = spawners[spawnerIndex];
-
 		if(mStarted == true){
+			GameObject[] spawners = GameObject.FindGameObjectsWithTag("BunnySpawner");
+			int spawnerIndex = (int)Random.Range(0, spawners.Length);
+			GameObject spawner = spawners[spawnerIndex];
 			GameObject newBunny = (GameObject)Instantiate(bunnyToSpawn, spawner.transform.position, spawner.transform.rotation);
 		}
 	}
