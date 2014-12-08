@@ -23,7 +23,7 @@ public class MegaCarrot : MonoBehaviour {
 
 	public void TakeDammage(){
 		mLife--;
-		if(mLife < 0){
+		if(mLife <= 0){
 			mLife = 0;
 			mDead = true;
 		}

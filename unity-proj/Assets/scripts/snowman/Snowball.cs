@@ -42,7 +42,6 @@ public class Snowball : MonoBehaviour {
 
 	void OnTriggerEnter(Collider _other)
 	{
-		Debug.Log (_other.gameObject.name);
 		if (_other.gameObject.layer == LayerMask.NameToLayer("bunny"))
 		{
 			BunnyAI bunnyAi = _other.gameObject.GetComponent<BunnyAI>();

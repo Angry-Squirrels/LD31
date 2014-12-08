@@ -13,6 +13,13 @@ public class GameController : MonoBehaviour {
 
 	public int nbCarrot = 3;
 
+	public MegaCarrot megaCarrot;
+
+	public GameObject gameOverUI;
+	public Base_SoundManager musicManager;
+
+	bool isGameOver = false;
+
 	void Awake(){
 		instance = this;
 	}
@@ -20,11 +27,21 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mDayManager = DayNightCycleManager.instance;
+		Time.timeScale = 1;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (megaCarrot.IsDead() && !isGameOver)
+		{
+			isGameOver = true;
+
+			musicManager.StopAllMusics();
+			musicManager.PlayMusic("gameover");
+
+			Time.timeScale = 0;
+			gameOverUI.SetActive(true);
+		}
 	}
 
 	public void StartGame(){
@@ -32,6 +49,12 @@ public class GameController : MonoBehaviour {
 		Instantiate(hero, Vector3.up * 10, Quaternion.identity);
 		mDayManager.StartCycles();
 		BroadcastMessage("GameStart");
+	}
+
+	public void resetGame()
+	{
+		Time.timeScale = 1;
+		Application.LoadLevel("testA_Ynk");
 	}
 
 	public void GetCarrot(int nb){
