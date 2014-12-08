@@ -46,12 +46,11 @@ public class Snowball : MonoBehaviour {
 		if (_other.gameObject.layer == LayerMask.NameToLayer("bunny"))
 		{
 			BunnyAI bunnyAi = _other.gameObject.GetComponent<BunnyAI>();
-			bunnyAi.TakeDammage(1);
+			bunnyAi.TakeDammage(damage);
 			die ();
 		}
 		else if (_other.gameObject.layer == LayerMask.NameToLayer("world"))
 		{
-			Debug.Log ("ground touched !!");
 			die ();
 		}
 	}

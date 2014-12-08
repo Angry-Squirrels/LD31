@@ -25,6 +25,10 @@ public class Snowman : MonoBehaviour {
 
 	public Animation myAnim;
 
+	public AudioSource audioSource;
+	public AudioClip birthSound;
+	public AudioClip launchSound;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -147,6 +151,8 @@ public class Snowman : MonoBehaviour {
 		snowball.Launch (this);
 
 		myAnim.Play ("attack");
+		audioSource.clip = launchSound;
+		audioSource.Play ();
 	}
 
 	public void takeBackSnowball(Snowball _snowball)
@@ -179,5 +185,7 @@ public class Snowman : MonoBehaviour {
 		transform.Translate (Vector3.up * 11.5f);
 		myAnim.Play ("grow");
 		isStarting = true;
+		audioSource.clip = birthSound;
+		audioSource.Play ();
 	}
 }
