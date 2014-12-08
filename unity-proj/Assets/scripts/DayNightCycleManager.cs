@@ -53,7 +53,7 @@ public class DayNightCycleManager : MonoBehaviour {
 	private Color mCurrentMoonColor;
 
 	private int mCurrentDayPart;
-	private int mCurrentDay = 0;
+	public int mCurrentDay = 0;
 
 	private float mCurrentTransitionTime;
 	private bool mChangingDayPart;
