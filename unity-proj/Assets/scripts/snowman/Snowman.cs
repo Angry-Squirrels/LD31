@@ -10,6 +10,9 @@ public class Snowman : MonoBehaviour {
 	public Snowball snowball;
 	private List<Snowball> snowballs;
 
+	public int maxLife = 10;
+	public int life = 10;
+
 	public float fireRate = 0.5f;
 	private float fireTime = 0;
 	public Transform launchPoint;

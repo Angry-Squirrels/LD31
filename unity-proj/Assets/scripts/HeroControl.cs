@@ -9,15 +9,22 @@ public class HeroControl : MonoBehaviour {
 	public float gravity;
 	public Animation childAnim;
 	public Collider shovel;
+	public float SnowManDistFromCarrot;
+	public float MinDistBetweenSnowMen;
+	public int SnowmanCarrotCost;
+	public GameObject SnowManPrefab;
 
 	private CharacterController mCharacterController;
 	private Vector3 mMovementVector;
 	private CollisionFlags mCollisionFlags;
 
+	private GameController mGameController;
+
 	// Use this for initialization
 	void Start () {
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
 		mMovementVector = new Vector3();
+		mGameController = GameController.instance;
 	}
 	
 	// Update is called once per frame
@@ -68,17 +75,50 @@ public class HeroControl : MonoBehaviour {
 		if(minDist <= 10){
 			CarrotSlot theSlot = closestSlot.GetComponent<CarrotSlot>();
 			if(Input.GetButtonDown("Action")){
-				if(!theSlot.HasCarrot())
+				if(!theSlot.HasCarrot() && mGameController.nbCarrot > 0)
 					childAnim.Play("catch");
 				else if(theSlot.HasGrownCarrot())
 					childAnim.Play("dig");
 			}
 			closestSlot.BroadcastMessage("OnSelect");
 		}
-		// sinon on peut attaquer
+
+		if(minDist >= SnowManDistFromCarrot)
+			MakeSnowMan();
+		else
+			Debug.Log("too close from carrot");
+
 
 		if(Input.GetButtonDown("Attack"))
 			childAnim.Play("attack");
+
+	}
+
+	void MakeSnowMan ()
+	{
+		// get snoman list
+		GameObject[] snowmen = GameObject.FindGameObjectsWithTag("Snowman");
+		float minDist = float.MaxValue;
+		foreach(GameObject snowman in snowmen){
+			float dist = Vector3.Distance(snowman.transform.position, transform.position+transform.forward * 5);
+			if(dist < minDist)
+				minDist = dist;
+		}
+		Debug.Log(minDist + "/ " + MinDistBetweenSnowMen);
+		if(minDist >= MinDistBetweenSnowMen)
+			Debug.Log("can make a snow man");
+		else
+			Debug.Log("another snowman is too close");
+
+		if(minDist >= MinDistBetweenSnowMen && 
+		   Input.GetButtonDown("Action"))
+		{
+			if(mGameController.TakeCarrot(SnowmanCarrotCost)){
+
+				Instantiate(SnowManPrefab, transform.position + transform.forward*5, Quaternion.identity);
+
+			}
+		}
 
 	}
 
