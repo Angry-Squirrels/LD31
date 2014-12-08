@@ -42,7 +42,6 @@ public class Carrot : MonoBehaviour {
 
 			float t = mGrowingTime / mDayDuration;
 			float y = Mathf.Lerp(mStartY, mEndY, t);
-			Debug.Log(y);
 			transform.position = new Vector3(transform.position.x, y, transform.position.z);
 
 			if(t >= 1){
