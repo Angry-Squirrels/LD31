@@ -4,7 +4,7 @@ using System.Collections;
 public class Snowball : MonoBehaviour {
 
 	public float speed = 20;
-	public float damage = 5;
+	public int damage = 5;
 	public float lifeSpan = 2;
 
 	private Snowman parent;
