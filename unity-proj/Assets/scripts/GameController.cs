@@ -47,9 +47,10 @@ public class GameController : MonoBehaviour {
 
 	public void StartGame(){
 		menu.SetActive(false);
-		gameUi.SetActive(true);
+		//gameUi.SetActive(true);
 		Instantiate(hero, Vector3.up * 10, Quaternion.identity);
 		mDayManager.StartCycles();
+		megaCarrot.gameObject.SetActive (true);
 		BroadcastMessage("GameStart");
 	}
 
