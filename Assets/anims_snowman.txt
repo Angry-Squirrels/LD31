@@ -1,0 +1,3 @@
+0-50 - grow
+60-85 - attack
+95-130 - death
