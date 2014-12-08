@@ -91,16 +91,16 @@ public class BunnyAI : MonoBehaviour {
 			return;
 		}
 
-		if(mDead) {
+		if(mDead || mCurrentState == BunnyState.Dead) {
 			UpdateDead();
 			return;
 		}
 
 		int timeOfDay = DayNightCycleManager.instance.GetTimerOfDay();
 
-		if ((timeOfDay == 0 || timeOfDay == 3) && !mStartedTransform)
+		if ((timeOfDay == 0 || timeOfDay == 3) && !mStartedTransform )
 			ChangeState(BunnyState.Transforming);
-		else if(timeOfDay == 1 || timeOfDay == 2){
+		else if(timeOfDay == 1 || timeOfDay == 2) {
 			ChangeState(BunnyState.Normal);
 			mStartedTransform = false;
 		}
