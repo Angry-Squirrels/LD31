@@ -48,6 +48,12 @@ public class BunnyAI : MonoBehaviour {
 	private bool mEating = false;
 	float mEatingTimer = 0;
 
+	public LapinAnimEvent animEvent;
+	private float currentAnimTime = 0;
+	private float nextRandomTime = 0;
+
+	public ParticleSystem splashParticles;
+
 	// Use this for initialization
 	void Start () {
 		mMovement = new Vector3();
@@ -196,6 +202,8 @@ public class BunnyAI : MonoBehaviour {
 
 	public void TransformEnded(){
 		ChangeState(BunnyState.Angry);
+		currentAnimTime = 0;
+		nextRandomTime = Random.Range (0.5f, 5.0f);
 	}
 
 	void UpdateAngry(){
@@ -229,6 +237,15 @@ public class BunnyAI : MonoBehaviour {
 			GoTowardSlot(closestsFullSlots);
 		else
 			GotTowardMegaCarrot();
+
+		currentAnimTime += Time.deltaTime;
+		if (currentAnimTime >= nextRandomTime)
+		{
+			currentAnimTime = 0;
+			nextRandomTime = Random.Range(0.5f, 5.0f);
+
+			animEvent.playGrowlSound();
+		}
 	}
 
 	GameObject GetClosestSnowMan(){
@@ -338,6 +355,7 @@ public class BunnyAI : MonoBehaviour {
 			animation["death"].speed = 1.5f;
 			animation.Play("death");
 			mDead = true;
+			splashParticles.Play();
 			Rigidbody body = GetComponent<Rigidbody>();
 			CharacterController controller = GetComponent<CharacterController>();
 			Destroy(body);

@@ -20,6 +20,10 @@ public class HeroControl : MonoBehaviour {
 
 	private GameController mGameController;
 
+	public AudioSource SFXSource;
+	public AudioClip digSound;
+	public AudioClip getCarrotSound;
+
 	// Use this for initialization
 	void Start () {
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
@@ -45,7 +49,7 @@ public class HeroControl : MonoBehaviour {
 		if(IsOnFloor())
 			mMovementVector.y = 0;
 		 
-		if(mMovementVector.magnitude != 0 && !childAnim.IsPlaying("catch") && !childAnim.IsPlaying("dig"))
+		if(mMovementVector.magnitude != 0 && !childAnim.IsPlaying("catch") && !childAnim.IsPlaying("dig") && !childAnim.IsPlaying("idle"))
 			mCharacterController.transform.rotation = Quaternion.LookRotation(new Vector3(mMovementVector.x, 0, mMovementVector.z));
 	
 		float tspeed = Mathf.Sqrt(mMovementVector.x * mMovementVector.x + mMovementVector.z * mMovementVector.z);
@@ -76,15 +80,27 @@ public class HeroControl : MonoBehaviour {
 			CarrotSlot theSlot = closestSlot.GetComponent<CarrotSlot>();
 			if(Input.GetButtonDown("Action")){
 				if(!theSlot.HasCarrot() && mGameController.nbCarrot > 0)
+				{
 					childAnim.Play("catch");
+					SFXSource.clip = digSound;
+					SFXSource.volume = 1;
+					SFXSource.Play();
+				}
 				else if(theSlot.HasGrownCarrot())
+				{
 					childAnim.Play("dig");
+					SFXSource.clip = getCarrotSound;
+					SFXSource.volume = 0.5f;
+					SFXSource.Play();
+				}
 			}
 			closestSlot.BroadcastMessage("OnSelect");
 		}
 
 		if(minDist >= SnowManDistFromCarrot)
+		{
 			MakeSnowMan();
+		}
 
 		if(Input.GetButtonDown("Attack"))
 			childAnim.Play("attack");
@@ -117,6 +133,9 @@ public class HeroControl : MonoBehaviour {
 			if(mGameController.TakeCarrot(SnowmanCarrotCost)){
 				Instantiate(SnowManPrefab, transform.position + transform.forward*8 - transform.up*2, Quaternion.identity);
 				childAnim.Play("catch");
+				SFXSource.clip = digSound;
+				SFXSource.volume = 1;
+				SFXSource.Play();
 			}
 		}
 
