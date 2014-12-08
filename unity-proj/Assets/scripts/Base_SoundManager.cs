@@ -326,7 +326,7 @@ public class Base_SoundManager : MonoBehaviour
 		}
 		else
 		{
-			throw new KeyNotFoundException("This music is not currently playing : " + _musicName + ".");
+			//throw new KeyNotFoundException("This music is not currently playing : " + _musicName + ".");
 		}
 	}
 	

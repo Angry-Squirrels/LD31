@@ -10,11 +10,27 @@ public class Snowman : MonoBehaviour {
 	public Snowball snowball;
 	private List<Snowball> snowballs;
 
-	public float fireRate = 0.5f;
+	public int maxLife = 10;
+	public int life = 10;
+
+	public float fireRate = 1;
 	private float fireTime = 0;
 	public Transform launchPoint;
 
+	bool mIsDead = false;
+	bool isReady = false;
+	bool isStarting = false;
+
 	List<Transform> mRabbitToRemove;
+
+	public Animation myAnim;
+
+	public AudioSource audioSource;
+	public AudioClip birthSound;
+	public AudioClip launchSound;
+	public float yToDestroy;
+	public float meltSpeed;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -22,29 +38,49 @@ public class Snowman : MonoBehaviour {
 		reachableRabbits = new List<Transform> ();
 		snowballs = new List<Snowball> ();
 		instantiateSnowballs ();
+		StartCoroutine (StartAnimation ());
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if (reachableRabbits.Count > 0)
+		if(mIsDead) {
+			transform.Translate(Vector3.down * meltSpeed);
+			if(transform.position.y < yToDestroy)
+				Destroy(gameObject);
+			return;
+		}
+		if (isReady)
 		{
-			targetedRabbit = getClosestRabbit();
+			if (reachableRabbits.Count > 0)
+			{
+				targetedRabbit = getClosestRabbit();
+				if (targetedRabbit != null)
+				{
+					fire ();
+				}
+			}
+			else
+			{
+				targetedRabbit = null;
+			}
+
 			if (targetedRabbit != null)
 			{
-				fire ();
+				Vector3 target = targetedRabbit.position;
+				target.y = transform.position.y;
+				transform.LookAt (target);
 			}
 		}
 		else
 		{
-			targetedRabbit = null;
-		}
-
-		if (targetedRabbit != null)
-		{
-			Vector3 target = targetedRabbit.position;
-			target.y = transform.position.y;
-			transform.LookAt (target);
+			if (isStarting)
+			{
+				if (!myAnim.isPlaying)
+				{
+					isReady = true;
+				}
+			}
 		}
 	}
 
@@ -70,7 +106,7 @@ public class Snowman : MonoBehaviour {
 
 	private Transform getClosestRabbit()
 	{
-		float minDistance = 10000000;
+		float minDistance = float.MaxValue;
 		Transform rabbit = null;
 
 		foreach (Transform trsf in reachableRabbits)
@@ -79,6 +115,14 @@ public class Snowman : MonoBehaviour {
 				mRabbitToRemove.Add(trsf);
 				continue;
 			}
+
+			BunnyAI ai = trsf.gameObject.GetComponent<BunnyAI>();
+			if(ai.IsDead()){
+				mRabbitToRemove.Add(ai.transform);
+				continue;
+			}
+
+			if(!ai.IsAngry()) continue;
 
 			float distance = Vector3.Distance(transform.position, trsf.position);
 			if (distance < minDistance)
@@ -114,10 +158,43 @@ public class Snowman : MonoBehaviour {
 		snowball.transform.LookAt (targetedRabbit);
 		snowball.gameObject.SetActive (true);
 		snowball.Launch (this);
+
+		myAnim.Play ("attack");
+		audioSource.clip = launchSound;
+		audioSource.Play ();
 	}
 
 	public void takeBackSnowball(Snowball _snowball)
 	{
 		snowballs.Add (_snowball);
+	}
+
+	public void TakeDamage(int amount){
+		life -= amount;
+		if(life <= 0){
+			Die();
+		}
+	}
+
+	void Die(){
+		mIsDead = true;
+		myAnim.Play("death");
+	}
+
+	public bool IsDead() {
+		return mIsDead;
+	}
+
+	private IEnumerator StartAnimation()
+	{
+		transform.Translate (-Vector3.up * 11.5f);
+
+		yield return new WaitForSeconds(1.0f);
+		
+		transform.Translate (Vector3.up * 11.5f);
+		myAnim.Play ("grow");
+		isStarting = true;
+		audioSource.clip = birthSound;
+		audioSource.Play ();
 	}
 }
