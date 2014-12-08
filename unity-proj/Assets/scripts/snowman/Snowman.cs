@@ -17,6 +17,8 @@ public class Snowman : MonoBehaviour {
 	private float fireTime = 0;
 	public Transform launchPoint;
 
+	bool mIsDead = false;
+
 	List<Transform> mRabbitToRemove;
 	// Use this for initialization
 	void Start ()
@@ -30,6 +32,7 @@ public class Snowman : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+		if(mIsDead) return;
 		if (reachableRabbits.Count > 0)
 		{
 			targetedRabbit = getClosestRabbit();
@@ -73,13 +76,19 @@ public class Snowman : MonoBehaviour {
 
 	private Transform getClosestRabbit()
 	{
-		float minDistance = 10000000;
+		float minDistance = float.MaxValue;
 		Transform rabbit = null;
 
 		foreach (Transform trsf in reachableRabbits)
 		{
 			if(trsf == null){
 				mRabbitToRemove.Add(trsf);
+				continue;
+			}
+
+			BunnyAI ai = trsf.gameObject.GetComponent<BunnyAI>();
+			if(ai.IsDead()){
+				mRabbitToRemove.Add(ai.transform);
 				continue;
 			}
 
@@ -122,5 +131,20 @@ public class Snowman : MonoBehaviour {
 	public void takeBackSnowball(Snowball _snowball)
 	{
 		snowballs.Add (_snowball);
+	}
+
+	public void TakeDamage(int amount){
+		life -= amount;
+		if(life <= 0){
+			Die();
+		}
+	}
+
+	void Die(){
+		mIsDead = true;
+	}
+
+	public bool IsDead() {
+		return mIsDead;
 	}
 }

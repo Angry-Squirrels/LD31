@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Carrot : MonoBehaviour {
 
@@ -41,7 +42,8 @@ public class Carrot : MonoBehaviour {
 
 			float t = mGrowingTime / mDayDuration;
 			float y = Mathf.Lerp(mStartY, mEndY, t);
-			transform.position.Set(transform.position.x, y, transform.position.z);
+			Debug.Log(y);
+			transform.position = new Vector3(transform.position.x, y, transform.position.z);
 
 			if(t >= 1){
 				t = 1;

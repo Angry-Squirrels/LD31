@@ -9,7 +9,9 @@ public class SnowmanDetector : MonoBehaviour {
 	{
 		if (_other.gameObject.layer == LayerMask.NameToLayer("bunny"))
 		{
-			snowman.addRabbit(_other.transform);
+			BunnyAI ai = _other.GetComponent<BunnyAI>();
+			if(ai.IsAngry())
+				snowman.addRabbit(_other.transform);
 		}
 	}
 
