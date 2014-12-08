@@ -39,6 +39,9 @@ public class BunnyAI : MonoBehaviour {
 	private Vector3 mFinalMoveVector;
 	private bool mStartedTransform = false;
 
+	bool mDead = false;
+	public float unPoilEnDessousDeZero = -0.1f;
+
 	private GameObject mCurrentTarget;
 
 	private bool mEating = false;
@@ -78,9 +81,20 @@ public class BunnyAI : MonoBehaviour {
 		mOriginRotation = gameObject.transform.rotation;
 		mRotateTimer = 0;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
+
+		if(transform.position.y < unPoilEnDessousDeZero){
+			Destroy(gameObject);
+			return;
+		}
+
+		if(mDead) {
+			UpdateDead();
+			return;
+		}
+
 		int timeOfDay = DayNightCycleManager.instance.GetTimerOfDay();
 
 		if ((timeOfDay == 0 || timeOfDay == 3) && !mStartedTransform)
@@ -254,6 +268,24 @@ public class BunnyAI : MonoBehaviour {
 	}
 
 	void UpdateDead(){
+
+		mMovement.x = 0;
+		mMovement.y = 0;
+
+		if(!animation.IsPlaying("death") && !mDead){
+			animation["death"].speed = 1.5f;
+			animation.Play("death");
+			mDead = true;
+			Rigidbody body = GetComponent<Rigidbody>();
+			CharacterController controller = GetComponent<CharacterController>();
+			Destroy(body);
+			controller.enabled = false;
+		}
+
+		if(animation["death"].normalizedTime >= 1.0f)
+			Destroy(gameObject);
+
+		transform.Translate(Vector3.down * 0.001f);
 	}
 
 	bool IsOnFloor(){
@@ -299,7 +331,7 @@ public class BunnyAI : MonoBehaviour {
 	public void TakeDammage(int dammage){
 		life -= dammage;
 		if(life <= 0){
-			Destroy(gameObject);
+			ChangeState(BunnyState.Dead);
 		}
 	}
 
@@ -313,6 +345,10 @@ public class BunnyAI : MonoBehaviour {
 
 	public bool IsAngry(){
 		return mCurrentState == BunnyState.Angry;
+	}
+
+	public bool IsDead(){
+		return mDead;
 	}
 	
 }
