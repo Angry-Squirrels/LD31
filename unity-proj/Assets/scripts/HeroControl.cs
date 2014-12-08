@@ -101,11 +101,13 @@ public class HeroControl : MonoBehaviour {
 			if(dist < minDist)
 				minDist = dist;
 		}
-		Debug.Log(minDist + "/ " + MinDistBetweenSnowMen);
+		//Debug.Log(minDist + "/ " + MinDistBetweenSnowMen);
+		/*
 		if(minDist >= MinDistBetweenSnowMen)
 			Debug.Log("can make a snow man");
 		else
 			Debug.Log("another snowman is too close");
+			*/
 
 		if(minDist >= MinDistBetweenSnowMen && 
 		   Input.GetButtonDown("Action"))

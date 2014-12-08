@@ -13,13 +13,18 @@ public class Snowman : MonoBehaviour {
 	public int maxLife = 10;
 	public int life = 10;
 
-	public float fireRate = 0.5f;
+	public float fireRate = 1;
 	private float fireTime = 0;
 	public Transform launchPoint;
 
 	bool mIsDead = false;
+	bool isReady = false;
+	bool isStarting = false;
 
 	List<Transform> mRabbitToRemove;
+
+	public Animation myAnim;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -27,30 +32,44 @@ public class Snowman : MonoBehaviour {
 		reachableRabbits = new List<Transform> ();
 		snowballs = new List<Snowball> ();
 		instantiateSnowballs ();
+		StartCoroutine (StartAnimation ());
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		if(mIsDead) return;
-		if (reachableRabbits.Count > 0)
+		if (isReady)
 		{
-			targetedRabbit = getClosestRabbit();
+			if (reachableRabbits.Count > 0)
+			{
+				targetedRabbit = getClosestRabbit();
+				if (targetedRabbit != null)
+				{
+					fire ();
+				}
+			}
+			else
+			{
+				targetedRabbit = null;
+			}
+
 			if (targetedRabbit != null)
 			{
-				fire ();
+				Vector3 target = targetedRabbit.position;
+				target.y = transform.position.y;
+				transform.LookAt (target);
 			}
 		}
 		else
 		{
-			targetedRabbit = null;
-		}
-
-		if (targetedRabbit != null)
-		{
-			Vector3 target = targetedRabbit.position;
-			target.y = transform.position.y;
-			transform.LookAt (target);
+			if (isStarting)
+			{
+				if (!myAnim.isPlaying)
+				{
+					isReady = true;
+				}
+			}
 		}
 	}
 
@@ -126,6 +145,8 @@ public class Snowman : MonoBehaviour {
 		snowball.transform.LookAt (targetedRabbit);
 		snowball.gameObject.SetActive (true);
 		snowball.Launch (this);
+
+		myAnim.Play ("attack");
 	}
 
 	public void takeBackSnowball(Snowball _snowball)
@@ -142,9 +163,21 @@ public class Snowman : MonoBehaviour {
 
 	void Die(){
 		mIsDead = true;
+		myAnim.Play ("death");
 	}
 
 	public bool IsDead() {
 		return mIsDead;
+	}
+
+	private IEnumerator StartAnimation()
+	{
+		transform.Translate (-Vector3.up * 11.5f);
+
+		yield return new WaitForSeconds(1.0f);
+		
+		transform.Translate (Vector3.up * 11.5f);
+		myAnim.Play ("grow");
+		isStarting = true;
 	}
 }
