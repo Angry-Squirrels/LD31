@@ -28,6 +28,8 @@ public class Snowman : MonoBehaviour {
 	public AudioSource audioSource;
 	public AudioClip birthSound;
 	public AudioClip launchSound;
+	public float yToDestroy;
+	public float meltSpeed;
 
 	// Use this for initialization
 	void Start ()
@@ -42,7 +44,12 @@ public class Snowman : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if(mIsDead) return;
+		if(mIsDead) {
+			transform.Translate(Vector3.down * meltSpeed);
+			if(transform.position.y < yToDestroy)
+				Destroy(gameObject);
+			return;
+		}
 		if (isReady)
 		{
 			if (reachableRabbits.Count > 0)
@@ -115,6 +122,8 @@ public class Snowman : MonoBehaviour {
 				continue;
 			}
 
+			if(!ai.IsAngry()) continue;
+
 			float distance = Vector3.Distance(transform.position, trsf.position);
 			if (distance < minDistance)
 			{
@@ -169,7 +178,7 @@ public class Snowman : MonoBehaviour {
 
 	void Die(){
 		mIsDead = true;
-		myAnim.Play ("death");
+		myAnim.Play("death");
 	}
 
 	public bool IsDead() {

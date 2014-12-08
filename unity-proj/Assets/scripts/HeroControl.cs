@@ -97,6 +97,8 @@ public class HeroControl : MonoBehaviour {
 		GameObject[] snowmen = GameObject.FindGameObjectsWithTag("Snowman");
 		float minDist = float.MaxValue;
 		foreach(GameObject snowman in snowmen){
+			Snowman scriptSnow = snowman.GetComponent<Snowman>();
+			if(scriptSnow.IsDead()) continue;
 			float dist = Vector3.Distance(snowman.transform.position, transform.position+transform.forward * 7);
 			if(dist < minDist)
 				minDist = dist;

@@ -17,6 +17,7 @@ public class BunnyAI : MonoBehaviour {
 
 	public int maxLife = 10;
 	public int life = 10;
+	public float maxSnowManDist = 100;
 
 	enum BunnyState {Normal, Transforming, Angry, Dead};
 
@@ -220,10 +221,71 @@ public class BunnyAI : MonoBehaviour {
 		if(mMovement.magnitude > 1.0f && !animation.IsPlaying("run"))
 			animation.Play("run");
 
-		if(closestsFullSlots != null)
+		GameObject closestSnowman = GetClosestSnowMan();
+
+		if(closestSnowman != null)
+			GoTowardSnowMan(closestSnowman);
+		else if(closestsFullSlots != null)
 			GoTowardSlot(closestsFullSlots);
 		else
 			GotTowardMegaCarrot();
+	}
+
+	GameObject GetClosestSnowMan(){
+
+		GameObject[] snowmen = GameObject.FindGameObjectsWithTag("Snowman");
+		GameObject closestSnowMan = null;
+		float minDist = maxSnowManDist;
+
+		foreach(GameObject snowman in snowmen){
+			Snowman snowscript = snowman.GetComponent<Snowman>();
+			if(snowscript.IsDead()) continue;
+			float dist = Vector3.Distance(transform.position, snowman.transform.position);
+			if(dist < minDist)
+			{
+				minDist = dist;
+				closestSnowMan = snowman;
+			}
+		}
+
+		return closestSnowMan;
+
+	}
+
+	void GoTowardSnowMan(GameObject snowman){
+		mCurrentTarget = snowman;
+
+
+		mSpeed = movementSpeed * 2.0f;
+
+		float diffX = snowman.transform.position.x - transform.position.x;
+		float diffZ = snowman.transform.position.z - transform.position.z;
+		float dist = Mathf.Sqrt(diffX * diffX + diffZ * diffZ);
+		
+		transform.rotation = Quaternion.LookRotation(new Vector3(diffX, 0, diffZ));
+		
+		mMovement.x = gameObject.transform.forward.x * mSpeed;
+		mMovement.z = gameObject.transform.forward.z * mSpeed;
+
+		if(dist < 6){
+			mMovement = Vector3.zero;
+			if(!mEating){
+				mEating = true;
+				mEatingTimer = 0;
+				animation.Play("eat");
+			}else{
+				mEatingTimer += Time.deltaTime;
+				if(mEatingTimer > mEatRate){
+					mEating = false;
+					mEatingTimer = 0;
+					Snowman snowScript = snowman.GetComponent<Snowman>();
+					snowScript.TakeDamage(1);
+				}
+			}
+		}else{
+			mEating = false;
+			mEatingTimer = 0;
+		}
 	}
 
 	void GoTowardSlot (GameObject closestsFullSlots)
