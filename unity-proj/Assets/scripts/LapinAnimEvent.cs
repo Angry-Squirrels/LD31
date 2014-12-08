@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class LapinAnimEvent : MonoBehaviour {
 
 	public AudioSource audioSource;
+	public AudioSource splashSource;
 	public AudioClip jumpSFX;
 	public AudioClip deathSFX;
 	public AudioClip eatSFX;
@@ -18,7 +19,8 @@ public class LapinAnimEvent : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
 	}
 
@@ -34,5 +36,24 @@ public class LapinAnimEvent : MonoBehaviour {
 
 	public void OnTransformEnded(){
 		ai.TransformEnded();
+	}
+	
+	public void playDeathSound()
+	{
+		audioSource.clip = deathSFX;
+		audioSource.Play ();
+		splashSource.Play ();
+	}
+	
+	public void playEatSound()
+	{
+		audioSource.clip = eatSFX;
+		audioSource.Play ();
+	}
+	
+	public void playGrowlSound()
+	{
+		audioSource.clip = growlsSFX[Random.Range(0, 2)];
+		audioSource.Play ();
 	}
 }

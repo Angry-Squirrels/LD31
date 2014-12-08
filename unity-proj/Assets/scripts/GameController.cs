@@ -5,6 +5,7 @@ public class GameController : MonoBehaviour {
 
 	public GameObject menu;
 	public GameObject hero;
+	public GameObject gameUi;
 
 	private DayNightCycleManager mDayManager;
 	private int mCurrentDay = 0;
@@ -46,6 +47,7 @@ public class GameController : MonoBehaviour {
 
 	public void StartGame(){
 		menu.SetActive(false);
+		gameUi.SetActive(true);
 		Instantiate(hero, Vector3.up * 10, Quaternion.identity);
 		mDayManager.StartCycles();
 		BroadcastMessage("GameStart");
@@ -54,7 +56,7 @@ public class GameController : MonoBehaviour {
 	public void resetGame()
 	{
 		Time.timeScale = 1;
-		Application.LoadLevel("testA_Ynk");
+		Application.LoadLevel("testA");
 	}
 
 	public void GetCarrot(int nb){

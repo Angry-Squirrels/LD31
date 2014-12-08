@@ -10,6 +10,8 @@ public class MegaCarrot : MonoBehaviour {
 	float mStartY; 
 	bool mDead = false;
 
+	public ParticleSystem carrotEatedParticleSystem;
+
 	// Use this for initialization
 	void Start () {
 		mStartY = transform.position.y;
@@ -23,6 +25,7 @@ public class MegaCarrot : MonoBehaviour {
 
 	public void TakeDammage(){
 		mLife--;
+		carrotEatedParticleSystem.Play ();
 		if(mLife <= 0){
 			mLife = 0;
 			mDead = true;

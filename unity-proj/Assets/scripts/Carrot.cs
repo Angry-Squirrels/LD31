@@ -20,6 +20,10 @@ public class Carrot : MonoBehaviour {
 
 	bool mReady = false;
 
+	public AudioSource audioSource;
+
+	public GameObject godRays;
+
 	// Use this for initialization
 	void Start () {
 		mGrowingTime = 0;
@@ -28,6 +32,7 @@ public class Carrot : MonoBehaviour {
 		mCycleManager = DayNightCycleManager.instance;
 		mDayDuration = mCycleManager.GetTotalDayDuration();
 		mGrowVector = new Vector3(0.25f,1.0f,0.25f);
+		godRays.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -49,6 +54,8 @@ public class Carrot : MonoBehaviour {
 				if(!mReady){
 					mReady = true;
 					anim.Play("ready");
+					godRays.SetActive(true);
+					audioSource.Play();
 				}
 			}
 

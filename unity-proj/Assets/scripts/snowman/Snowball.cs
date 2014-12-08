@@ -10,6 +10,10 @@ public class Snowball : MonoBehaviour {
 	private Snowman parent;
 	private bool isLaunched = false;
 	private float lifeTime = 0;
+
+	public ParticleSystem particleSystem;
+
+	public AudioSource audioSource;
 	
 	// Update is called once per frame
 	void Update ()
@@ -36,7 +40,15 @@ public class Snowball : MonoBehaviour {
 	private void die()
 	{
 		isLaunched = false;
+		gameObject.renderer.enabled = false;
+		StartCoroutine (LateDie ());
+	}
+
+	private IEnumerator LateDie()
+	{
+		yield return new WaitForSeconds (0.7f);
 		gameObject.SetActive (false);
+		gameObject.renderer.enabled = true;
 		parent.takeBackSnowball (this);
 	}
 
@@ -46,6 +58,8 @@ public class Snowball : MonoBehaviour {
 		{
 			BunnyAI bunnyAi = _other.gameObject.GetComponent<BunnyAI>();
 			bunnyAi.TakeDammage(damage);
+			particleSystem.Play();
+			audioSource.Play ();
 			die ();
 		}
 		else if (_other.gameObject.layer == LayerMask.NameToLayer("world"))
