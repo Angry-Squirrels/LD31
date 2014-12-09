@@ -22,7 +22,7 @@ public class CameraShake : MonoBehaviour
 	public void Shake(){
 		originPosition = transform.position;
 		originRotation = transform.rotation;
-		shake_intensity = .03f;
+		shake_intensity = .05f;
 		shake_decay = 0.005f;
 	}
 }
