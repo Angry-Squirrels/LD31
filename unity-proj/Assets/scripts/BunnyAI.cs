@@ -238,7 +238,7 @@ public class BunnyAI : MonoBehaviour {
 			distanceToMegaCarrot = Vector3.Distance(transform.position, megaCarrot.transform.position);
 		}
 
-		if (distanceToMegaCarrot < 50)
+		if (distanceToMegaCarrot < 25)
 		{
 			GotTowardMegaCarrot();
 		}
