@@ -19,7 +19,7 @@ public class RabbitSpawner : MonoBehaviour {
 
 	void OnNewDay(int day){
 		mBunniesToSpawnDurringDay += (int)(day/1.5f);
-		mBunniesToSpawnDurringNight += day;
+		mBunniesToSpawnDurringNight += (int)(day*2);
 
 		mDaySpawnRate = mCycleManager.GetDayDuration() / (mBunniesToSpawnDurringDay-1);
 		mNightSpawnRate = mCycleManager.GetNightDuration() / (mBunniesToSpawnDurringNight-1);
