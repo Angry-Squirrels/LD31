@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour {
 
 			Time.timeScale = 0;
 			gameUi.SetActive(false);
-			gameOverUI.updateText(mCurrentDay, nbCarrot, nbRabbitKilled);
+			gameOverUI.updateText(mDayManager.mCurrentDay, nbCarrot, nbRabbitKilled);
 			gameOverUI.gameObject.SetActive(true);
 		}
 	}
