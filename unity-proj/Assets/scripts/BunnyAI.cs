@@ -9,9 +9,9 @@ public class BunnyAI : MonoBehaviour {
 	public float movementSpeed = 25;
 	public float mEatRate = 2.0f;
 	public float minDistToFlee = 10;
-	public Animation animation;
+	public Animation bunnyAnim;
 
-	public SkinnedMeshRenderer renderer;
+	public SkinnedMeshRenderer bunnyRenderer;
 	public Texture mignon;
 	public Texture mechant;
 
@@ -26,7 +26,7 @@ public class BunnyAI : MonoBehaviour {
 	private CollisionFlags mCollisionFlags; 
 	private CharacterController mCharacterController;
 	
-	private Vector3 mDest;
+	//private Vector3 mDest;
 	private float mNewDestTime;
 	private float mNewDestCounter;
 	private float mSpeed;
@@ -35,7 +35,7 @@ public class BunnyAI : MonoBehaviour {
 	private float mRotateTimer;
 	private float mTimeToRotate;
 	private float mDistFromCenter = 75;
-	private bool mFleeing = false;
+	//private bool mFleeing = false;
 	private float mAir = 0.0f;
 	private Vector3 mFinalMoveVector;
 	private bool mStartedTransform = false;
@@ -60,7 +60,7 @@ public class BunnyAI : MonoBehaviour {
 		mFinalMoveVector = new Vector3();
 		mCurrentState = BunnyState.Normal;
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
-		mDest = new Vector3();
+		//mDest = new Vector3();
 		ChangeRandomly ();
 	}
 
@@ -74,14 +74,14 @@ public class BunnyAI : MonoBehaviour {
 			mNewDestTime = Random.Range(1.0f, 3.0f);
 			mSpeed = 0;
 			mTimeToRotate = 1.0f;
-			if(!animation.IsPlaying("idle"))
-				animation.Play("idle");
+			if(!bunnyAnim.IsPlaying("idle"))
+				bunnyAnim.Play("idle");
 		}else{
 			mNewDestTime = Random.Range (3.0f, 6.0f);
 			mSpeed = movementSpeed;
 			mTimeToRotate = Random.Range(0.5f,2.0f);
-			if(!animation.IsPlaying("run"))
-				animation.Play("run");
+			if(!bunnyAnim.IsPlaying("run"))
+				bunnyAnim.Play("run");
 		}
 		mNewDestCounter = 0;
 		mDestRotation = Quaternion.Euler(0, Random.Range (0, 360), 0);
@@ -149,7 +149,7 @@ public class BunnyAI : MonoBehaviour {
 		if(t > 1)
 			t = 1;
 
-		animation["run"].speed = 1.0f;
+		bunnyAnim["run"].speed = 1.0f;
 
 		//get closer to game center
 		float fieldDist = Vector3.Distance(gameObject.transform.position, Vector3.zero);
@@ -169,9 +169,9 @@ public class BunnyAI : MonoBehaviour {
 			fleeVector.y = 0;
 			mDestRotation =  Quaternion.LookRotation(fleeVector);
 			mSpeed = movementSpeed * 2.0f;
-			animation["run"].speed = 2.0f;
-			if(!animation.IsPlaying("run"))
-				animation.Play("run");
+			bunnyAnim["run"].speed = 2.0f;
+			if(!bunnyAnim.IsPlaying("run"))
+				bunnyAnim.Play("run");
 		}
 
 		gameObject.transform.rotation = Quaternion.Lerp(mOriginRotation, mDestRotation, t);
@@ -179,16 +179,16 @@ public class BunnyAI : MonoBehaviour {
 		mMovement.x = gameObject.transform.forward.x * mSpeed;
 		mMovement.z = gameObject.transform.forward.z * mSpeed;
 
-		if(renderer.material.mainTexture != mignon)
-			renderer.material.SetTexture(0, mignon);
+		if(bunnyRenderer.material.mainTexture != mignon)
+			bunnyRenderer.material.SetTexture(0, mignon);
 	}
 
 	void UpdateTransforming(){
 		if(!mStartedTransform){
-			animation["wake"].speed = Random.Range(0.5f, 1.0f);
-			animation.Play("wake");
+			bunnyAnim["wake"].speed = Random.Range(0.5f, 1.0f);
+			bunnyAnim.Play("wake");
 			mStartedTransform = true;
-			renderer.material.SetTexture(0, mechant);
+			bunnyRenderer.material.SetTexture(0, mechant);
 
 			mMovement.x = 0;
 			mMovement.z = 0;
@@ -218,25 +218,39 @@ public class BunnyAI : MonoBehaviour {
 		foreach (GameObject slot in slots){
 			CarrotSlot slotScript = slot.GetComponent<CarrotSlot>();
 			float dist = Vector3.Distance(slot.transform.position, transform.position);
-			if(slotScript.HasGrownCarrot() &&  dist < minDist){
+			if(slotScript.HasCarrot() &&  dist < minDist){
 				minDist = dist;
 				closestsFullSlots = slot;
 			}
 		}
 
-		animation["run"].speed = 2.0f;
+		bunnyAnim["run"].speed = 2.0f;
 
-		if(mMovement.magnitude > 1.0f && !animation.IsPlaying("run"))
-			animation.Play("run");
+		if(mMovement.magnitude > 1.0f && !bunnyAnim.IsPlaying("run"))
+			bunnyAnim.Play("run");
 
 		GameObject closestSnowman = GetClosestSnowMan();
 
-		if(closestSnowman != null)
-			GoTowardSnowMan(closestSnowman);
-		else if(closestsFullSlots != null)
-			GoTowardSlot(closestsFullSlots);
-		else
+		GameObject megaCarrot = GameObject.FindGameObjectWithTag("BigCarrot");
+		float distanceToMegaCarrot = 1000;
+		if (megaCarrot != null)
+		{
+			distanceToMegaCarrot = Vector3.Distance(transform.position, megaCarrot.transform.position);
+		}
+
+		if (distanceToMegaCarrot < 50)
+		{
 			GotTowardMegaCarrot();
+		}
+		else
+		{
+			if(closestSnowman != null)
+				GoTowardSnowMan(closestSnowman);
+			else if(closestsFullSlots != null)
+				GoTowardSlot(closestsFullSlots);
+			else
+				GotTowardMegaCarrot();
+		}
 
 		currentAnimTime += Time.deltaTime;
 		if (currentAnimTime >= nextRandomTime)
@@ -289,7 +303,7 @@ public class BunnyAI : MonoBehaviour {
 			if(!mEating){
 				mEating = true;
 				mEatingTimer = 0;
-				animation.Play("eat");
+				bunnyAnim.Play("eat");
 			}else{
 				mEatingTimer += Time.deltaTime;
 				if(mEatingTimer > mEatRate){
@@ -325,7 +339,7 @@ public class BunnyAI : MonoBehaviour {
 			if(!mEating){
 				mEating = true;
 				mEatingTimer = 0;
-				animation.Play("eat");
+				bunnyAnim.Play("eat");
 			}else{
 				mEatingTimer += Time.deltaTime;
 				if(mEatingTimer > mEatRate){
@@ -351,9 +365,9 @@ public class BunnyAI : MonoBehaviour {
 		mMovement.x = 0;
 		mMovement.y = 0;
 
-		if(!animation.IsPlaying("death") && !mDead){
-			animation["death"].speed = 1.5f;
-			animation.Play("death");
+		if(!bunnyAnim.IsPlaying("death") && !mDead){
+			bunnyAnim["death"].speed = 1.5f;
+			bunnyAnim.Play("death");
 			mDead = true;
 			splashParticles.Play();
 			Rigidbody body = GetComponent<Rigidbody>();
@@ -362,7 +376,7 @@ public class BunnyAI : MonoBehaviour {
 			controller.enabled = false;
 		}
 
-		if(animation["death"].normalizedTime >= 1.0f)
+		if(bunnyAnim["death"].normalizedTime >= 1.0f)
 			Destroy(gameObject);
 
 		transform.Translate(Vector3.down * 0.001f);
@@ -396,7 +410,7 @@ public class BunnyAI : MonoBehaviour {
 				if(!mEating){
 					mEating = true;
 					mEatingTimer = 0;
-					animation.Play("eat");
+					bunnyAnim.Play("eat");
 				}else{
 					mEatingTimer += Time.deltaTime;
 					if(mEatingTimer > mEatRate){

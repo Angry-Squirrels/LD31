@@ -19,7 +19,7 @@ public class DayNightCycleManager : MonoBehaviour {
 	public float transitionTime = 2.0f;
 
 	// camera an sun effect
-	public Camera camera;
+	public Camera mainCamera;
 	public Light sun;
 	public Light moon;
 
@@ -60,15 +60,17 @@ public class DayNightCycleManager : MonoBehaviour {
 	public MeshRenderer starsRenderer;
 
 	// 0 : 0h00 1 : 23h59m59s
-	private float mCyclePosition;
+	//private float mCyclePosition;
 	private float mTimeCounter;
 
+	/*
 	private Color mCurrentSkyColor;
 	private Color mCurrentSunColor;
 	private Color mCurrentMoonColor;
+	*/
 
 	private int mCurrentDayPart;
-	public int mCurrentDay = 0;
+	public int mCurrentDay = 1;
 
 	private float mCurrentTransitionTime;
 	private bool mChangingDayPart;
@@ -81,11 +83,11 @@ public class DayNightCycleManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mCyclePosition = 0;
+		//mCyclePosition = 0;
 		mTimeCounter = startingTimeOfDay;
-		mCurrentSkyColor = aubeSkyColor;
+		/*mCurrentSkyColor = aubeSkyColor;
 		mCurrentMoonColor = aubeMoonColor;
-		mCurrentSunColor = daySunColor;
+		mCurrentSunColor = daySunColor;*/
 		mCurrentDayPart = 0;
 		mCurrentTransitionTime = 0;
 		mChangingDayPart = false;
@@ -152,7 +154,7 @@ public class DayNightCycleManager : MonoBehaviour {
 
 		switch(mCurrentDayPart){
 		case 0 :
-			camera.backgroundColor = Color.Lerp(nightSkyColor, aubeSkyColor, t);
+			mainCamera.backgroundColor = Color.Lerp(nightSkyColor, aubeSkyColor, t);
 			moon.color = Color.Lerp(nightMoonColor, aubeMoonColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonNightRotation), Quaternion.LookRotation(moonAubeRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunNightRotation), Quaternion.LookRotation(sunAubeRotation), t);
@@ -162,7 +164,7 @@ public class DayNightCycleManager : MonoBehaviour {
 			moonObj.transform.position = Vector3.Lerp(moonNightPos, moonAubePos, t);
 			break;
 		case 1 :
-			camera.backgroundColor = Color.Lerp(aubeSkyColor, daySkyColor, t);
+			mainCamera.backgroundColor = Color.Lerp(aubeSkyColor, daySkyColor, t);
 			sun.color = Color.Lerp(aubeMoonColor, daySunColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonAubeRotation), Quaternion.LookRotation(moonDayRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunAubeRotation), Quaternion.LookRotation(sunDayRotation), t);
@@ -172,7 +174,7 @@ public class DayNightCycleManager : MonoBehaviour {
 			moonObj.transform.position = Vector3.Lerp(moonAubePos, moonDayPos, t);
 			break;
 		case 2 :
-			camera.backgroundColor = Color.Lerp(daySkyColor, crepSkyColor, t);
+			mainCamera.backgroundColor = Color.Lerp(daySkyColor, crepSkyColor, t);
 			sun.color = Color.Lerp(daySunColor, crepSunColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonDayRotation), Quaternion.LookRotation(moonCrepRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunDayRotation), Quaternion.LookRotation(sunCrepRotation), t);
@@ -182,7 +184,7 @@ public class DayNightCycleManager : MonoBehaviour {
 			moonObj.transform.position = Vector3.Lerp(moonDayPos, moonCrepPos, t);
 			break;
 		case 3 :
-			camera.backgroundColor = Color.Lerp(crepSkyColor, nightSkyColor, t);
+			mainCamera.backgroundColor = Color.Lerp(crepSkyColor, nightSkyColor, t);
 			moon.color = Color.Lerp(crepSunColor, nightMoonColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonCrepRotation), Quaternion.LookRotation(moonNightRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunCrepRotation), Quaternion.LookRotation(sunNightRotation), t);

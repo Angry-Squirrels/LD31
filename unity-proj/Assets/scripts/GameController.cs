@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour {
 	public GameObject gameUi;
 
 	private DayNightCycleManager mDayManager;
-	private int mCurrentDay = 0;
+	//private int mCurrentDay = 0;
 
 	public static GameController instance;
 

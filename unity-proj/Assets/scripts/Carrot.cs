@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 public class Carrot : MonoBehaviour {
 
-	int mLevel = 0;
+	//int mLevel = 0;
 	DayNightCycleManager mCycleManager;
 	float mDayDuration = 0;
 	float mGrowingTime = 0;
 	int mAge = 0;
-	Vector3 mGrowVector;
+	//Vector3 mGrowVector;
 
 	public float maxTranslate = 10;
 	public Animation anim;
 
-	float mTotalTranslate = 0;
+	//float mTotalTranslate = 0;
 	float mStartY = 0;
 	float mEndY = 0;
 
@@ -31,7 +31,7 @@ public class Carrot : MonoBehaviour {
 		mEndY = mStartY + maxTranslate;
 		mCycleManager = DayNightCycleManager.instance;
 		mDayDuration = mCycleManager.GetTotalDayDuration();
-		mGrowVector = new Vector3(0.25f,1.0f,0.25f);
+		//mGrowVector = new Vector3(0.25f,1.0f,0.25f);
 		godRays.SetActive(false);
 	}
 	

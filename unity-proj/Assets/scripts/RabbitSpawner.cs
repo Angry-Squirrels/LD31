@@ -66,7 +66,7 @@ public class RabbitSpawner : MonoBehaviour {
 			GameObject[] spawners = GameObject.FindGameObjectsWithTag("BunnySpawner");
 			int spawnerIndex = (int)Random.Range(0, spawners.Length);
 			GameObject spawner = spawners[spawnerIndex];
-			GameObject newBunny = (GameObject)Instantiate(bunnyToSpawn, spawner.transform.position, spawner.transform.rotation);
+			/*GameObject newBunny = (GameObject)*/Instantiate(bunnyToSpawn, spawner.transform.position, spawner.transform.rotation);
 		}
 	}
 

@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class CarrotSlot : MonoBehaviour {
 
 	public GameObject carrotToInstantiate;
 
-	float mBaseY;
+	//float mBaseY;
 	bool mSelected;
 	bool mHasCarrot;
 	GameObject mCarrotte;
@@ -13,7 +13,7 @@ public class CarrotSlot : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		mBaseY = transform.position.y;
+		//mBaseY = transform.position.y;
 		mSelected = false;
 		mHasCarrot = false;
 		mGameController = GameController.instance;

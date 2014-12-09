@@ -11,7 +11,7 @@ public class Snowball : MonoBehaviour {
 	private bool isLaunched = false;
 	private float lifeTime = 0;
 
-	public ParticleSystem particleSystem;
+	public ParticleSystem myParticleSystem;
 
 	public AudioSource audioSource;
 	
@@ -58,7 +58,7 @@ public class Snowball : MonoBehaviour {
 		{
 			BunnyAI bunnyAi = _other.gameObject.GetComponent<BunnyAI>();
 			bunnyAi.TakeDammage(damage);
-			particleSystem.Play();
+			myParticleSystem.Play();
 			audioSource.Play ();
 			die ();
 		}
