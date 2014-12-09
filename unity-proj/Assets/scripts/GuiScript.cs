@@ -24,7 +24,7 @@ public class GuiScript : MonoBehaviour {
 		bar.transform.localScale = new Vector3(t,1.0f,1.0f);
 
 		nbDay.text = "" + dayManager.mCurrentDay;
-		nbCarrot.text = "" + controller.nbCarrot;
-		nbRabbitKilled.text = "" + controller.getNbRabbitKilled ();
+		nbCarrot.text = "x" + controller.nbCarrot;
+		nbRabbitKilled.text = "x" + controller.getNbRabbitKilled ();
 	}
 }

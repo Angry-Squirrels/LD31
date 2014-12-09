@@ -11,7 +11,7 @@ public class GameOverGUIScript : MonoBehaviour {
 	public void updateText(int day, int carrot, int rabbit)
 	{
 		nbDay.text = "" + day;
-		nbCarrot.text = "" + carrot;
-		nbRabbitKilled.text = "" + rabbit;
+		nbCarrot.text = "x" + carrot;
+		nbRabbitKilled.text = "x" + rabbit;
 	}
 }
