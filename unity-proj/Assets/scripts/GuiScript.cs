@@ -11,6 +11,7 @@ public class GuiScript : MonoBehaviour {
 
 	public Text nbDay;
 	public Text nbCarrot;
+	public Text nbRabbitKilled;
 
 	// Use this for initialization
 	void Start () {
@@ -24,5 +25,6 @@ public class GuiScript : MonoBehaviour {
 
 		nbDay.text = "" + dayManager.mCurrentDay;
 		nbCarrot.text = "" + controller.nbCarrot;
+		nbRabbitKilled.text = "" + controller.getNbRabbitKilled ();
 	}
 }
