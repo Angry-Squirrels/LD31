@@ -13,10 +13,11 @@ public class GameController : MonoBehaviour {
 	public static GameController instance;
 
 	public int nbCarrot = 3;
+	private int nbRabbitKilled = 0;
 
 	public MegaCarrot megaCarrot;
 
-	public GameObject gameOverUI;
+	public GameOverGUIScript gameOverUI;
 	public Base_SoundManager musicManager;
 
 	bool isGameOver = false;
@@ -42,7 +43,9 @@ public class GameController : MonoBehaviour {
 			musicManager.PlayMusic("gameover");
 
 			Time.timeScale = 0;
-			gameOverUI.SetActive(true);
+			gameUi.SetActive(false);
+			gameOverUI.updateText(mCurrentDay, nbCarrot, nbRabbitKilled);
+			gameOverUI.gameObject.SetActive(true);
 		}
 	}
 
@@ -71,5 +74,15 @@ public class GameController : MonoBehaviour {
 			return true;
 		}
 		return false;
+	}
+
+	public void onRabbitKilled()
+	{
+		nbRabbitKilled++;
+	}
+
+	public int getNbRabbitKilled()
+	{
+		return nbRabbitKilled;
 	}
 }

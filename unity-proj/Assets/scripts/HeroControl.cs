@@ -24,6 +24,8 @@ public class HeroControl : MonoBehaviour {
 	public AudioClip digSound;
 	public AudioClip getCarrotSound;
 
+	public GameObject helper;
+
 	// Use this for initialization
 	void Start () {
 		mCharacterController = (CharacterController)GetComponent("CharacterController");
@@ -94,7 +96,24 @@ public class HeroControl : MonoBehaviour {
 					SFXSource.Play();
 				}
 			}
-			closestSlot.BroadcastMessage("OnSelect");
+			if(!theSlot.HasCarrot() && mGameController.nbCarrot > 0)
+			{
+				closestSlot.BroadcastMessage("OnSelect");
+				helper.SetActive(true);
+			}
+			else if(theSlot.HasGrownCarrot())
+			{
+				closestSlot.BroadcastMessage("OnSelect");
+				helper.SetActive(true);
+			}
+			else
+			{
+				helper.SetActive(false);
+			}
+		}
+		else
+		{
+			helper.SetActive(false);
 		}
 
 		if(minDist >= SnowManDistFromCarrot)
