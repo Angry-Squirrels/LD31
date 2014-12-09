@@ -171,5 +171,10 @@ public class HeroControl : MonoBehaviour {
 	bool IsOnFloor(){
 		return (mCollisionFlags & CollisionFlags.Below) != 0;
 	}
+
+	public void disableHelper()
+	{
+		helper.SetActive (false);
+	}
 	
 }
