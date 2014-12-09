@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		mDayManager = DayNightCycleManager.instance;
 		Time.timeScale = 1;
+		menu.SetActive(true);
 	}
 	
 	// Update is called once per frame

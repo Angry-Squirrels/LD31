@@ -23,6 +23,19 @@ public class DayNightCycleManager : MonoBehaviour {
 	public Light sun;
 	public Light moon;
 
+	public GameObject sunObj;
+	public GameObject moonObj;
+
+	public Vector3 sunAubePos;
+	public Vector3 sunDayPos;
+	public Vector3 sunCrepPos;
+	public Vector3 sunNightPos;
+
+	public Vector3 moonAubePos;
+	public Vector3 moonDayPos;
+	public Vector3 moonCrepPos;
+	public Vector3 moonNightPos;
+
 	public Vector3 sunAubeRotation;
 	public Vector3 sunDayRotation;
 	public Vector3 sunCrepRotation;
@@ -43,6 +56,8 @@ public class DayNightCycleManager : MonoBehaviour {
 	public Color crepSunColor;
 	public Color nightMoonColor;
 	public Color aubeMoonColor;
+
+	public MeshRenderer starsRenderer;
 
 	// 0 : 0h00 1 : 23h59m59s
 	private float mCyclePosition;
@@ -133,30 +148,48 @@ public class DayNightCycleManager : MonoBehaviour {
 			t = 1;
 		}
 
+		Color starsColor = starsRenderer.material.color;
+
 		switch(mCurrentDayPart){
 		case 0 :
 			camera.backgroundColor = Color.Lerp(nightSkyColor, aubeSkyColor, t);
 			moon.color = Color.Lerp(nightMoonColor, aubeMoonColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonNightRotation), Quaternion.LookRotation(moonAubeRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunNightRotation), Quaternion.LookRotation(sunAubeRotation), t);
+			starsColor.a = Mathf.Lerp(1.0f, 0.3f, t);
+			starsRenderer.material.color = starsColor;
+			sunObj.transform.position = Vector3.Lerp(sunNightPos, sunAubePos, t);
+			moonObj.transform.position = Vector3.Lerp(moonNightPos, moonAubePos, t);
 			break;
 		case 1 :
 			camera.backgroundColor = Color.Lerp(aubeSkyColor, daySkyColor, t);
 			sun.color = Color.Lerp(aubeMoonColor, daySunColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonAubeRotation), Quaternion.LookRotation(moonDayRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunAubeRotation), Quaternion.LookRotation(sunDayRotation), t);
+			starsColor.a = Mathf.Lerp(0.3f, 0.0f, t);
+			starsRenderer.material.color = starsColor;
+			sunObj.transform.position = Vector3.Lerp(sunAubePos, sunDayPos, t);
+			moonObj.transform.position = Vector3.Lerp(moonAubePos, moonDayPos, t);
 			break;
 		case 2 :
 			camera.backgroundColor = Color.Lerp(daySkyColor, crepSkyColor, t);
 			sun.color = Color.Lerp(daySunColor, crepSunColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonDayRotation), Quaternion.LookRotation(moonCrepRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunDayRotation), Quaternion.LookRotation(sunCrepRotation), t);
+			starsColor.a = Mathf.Lerp(0.0f, 0.3f, t);
+			starsRenderer.material.color = starsColor;
+			sunObj.transform.position = Vector3.Lerp(sunDayPos, sunCrepPos, t);
+			moonObj.transform.position = Vector3.Lerp(moonDayPos, moonCrepPos, t);
 			break;
 		case 3 :
 			camera.backgroundColor = Color.Lerp(crepSkyColor, nightSkyColor, t);
 			moon.color = Color.Lerp(crepSunColor, nightMoonColor, t);
 			moon.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(moonCrepRotation), Quaternion.LookRotation(moonNightRotation), t);
 			sun.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(sunCrepRotation), Quaternion.LookRotation(sunNightRotation), t);
+			starsColor.a = Mathf.Lerp(0.3f, 1.0f, t);
+			starsRenderer.material.color = starsColor;
+			sunObj.transform.position = Vector3.Lerp(sunCrepPos, sunNightPos, t);
+			moonObj.transform.position = Vector3.Lerp(moonCrepPos, moonNightPos, t);
 			break;
 		}
 	}
