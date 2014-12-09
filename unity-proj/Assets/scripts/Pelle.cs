@@ -23,6 +23,7 @@ public class Pelle : MonoBehaviour {
 		if (bunny.gameObject.layer == LayerMask.NameToLayer("bunny")){
 			BunnyAI bunnyScript = bunny.GetComponent<BunnyAI>();
 			bunnyScript.TakeDammage(5);
+			Camera.main.GetComponent<CameraShake>().Shake();
 			if(lastTimePlayed > 0.25)
 			{
 				source.clip = soundToPlay[Random.Range(0,2)];
