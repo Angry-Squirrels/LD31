@@ -40,7 +40,7 @@ public class Snowball : MonoBehaviour {
 	private void die()
 	{
 		isLaunched = false;
-		gameObject.renderer.enabled = false;
+		gameObject.GetComponent<Renderer>().enabled = false;
 		StartCoroutine (LateDie ());
 	}
 
@@ -48,7 +48,7 @@ public class Snowball : MonoBehaviour {
 	{
 		yield return new WaitForSeconds (0.7f);
 		gameObject.SetActive (false);
-		gameObject.renderer.enabled = true;
+		gameObject.GetComponent<Renderer>().enabled = true;
 		parent.takeBackSnowball (this);
 	}
 

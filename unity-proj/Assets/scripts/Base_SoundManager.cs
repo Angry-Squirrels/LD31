@@ -6,21 +6,21 @@ using System.Collections.Generic;
 /// Gestionnaire des sons.
 /// </summary>
 /// <exception cref='KeyNotFoundException'>
-/// Est envoyé lors d'un appel à une fonction avec un nom de son ou de musique qui n'existe pas.
+/// Est envoyÃ© lors d'un appel Ã  une fonction avec un nom de son ou de musique qui n'existe pas.
 /// </exception>
 /// <exception cref='UnityException'>
-/// Est envoyé lors d'un mauvais appel de fonction.
+/// Est envoyÃ© lors d'un mauvais appel de fonction.
 /// </exception>
 public class Base_SoundManager : MonoBehaviour
 {
 	[System.Serializable]
 	/// <summary>
-	/// Défini les propriétés nécessaires à la création d'un son.
+	/// DÃ©fini les propriÃ©tÃ©s nÃ©cessaires Ã  la crÃ©ation d'un son.
 	/// </summary>
 	public class Sound
 	{
 		/// <summary>
-		/// Son à jouer.
+		/// Son Ã  jouer.
 		/// </summary>
 		public AudioClip audioClip;
 		/// <summary>
@@ -28,7 +28,7 @@ public class Base_SoundManager : MonoBehaviour
 		/// </summary>
 		public GameObject whoIsPlayingIt;
 		/// <summary>
-		/// Nom du son : utilisé dans le Dictionnaire comme clef pour ce son.
+		/// Nom du son : utilisÃ© dans le Dictionnaire comme clef pour ce son.
 		/// </summary>
 		public string soundName;
 		/// <summary>
@@ -44,7 +44,7 @@ public class Base_SoundManager : MonoBehaviour
 		/// </summary>
 		public bool isMusic = false;
 		/// <summary>
-		/// Côté duquel le son est joué : entre -1 (tout à gauche) et 1 (tout à droite).
+		/// CÃ´tÃ© duquel le son est jouÃ© : entre -1 (tout Ã  gauche) et 1 (tout Ã  droite).
 		/// </summary>
 		public float pan2D = 0;
 		
@@ -54,10 +54,10 @@ public class Base_SoundManager : MonoBehaviour
 		public bool is3D = false;
 		
 		
-		// les propriétés en dessous ne sont nécessaires que si le son est 3D
+		// les propriÃ©tÃ©s en dessous ne sont nÃ©cessaires que si le son est 3D
 		
 		/// <summary>
-		/// En dessous de cette distance, le son sera entendu à plein volume.
+		/// En dessous de cette distance, le son sera entendu Ã  plein volume.
 		/// </summary>
 		public float minDistance;
 		/// <summary>
@@ -69,31 +69,31 @@ public class Base_SoundManager : MonoBehaviour
 		/// </summary>
 		public float panLevel = 1;
 		/// <summary>
-		/// Comment le son se propage en 3D : entre 0 (le son ne sera entendu qu'à l'endroit exact où il est joué) et 360 (le son se propagera aux baffles proches).
+		/// Comment le son se propage en 3D : entre 0 (le son ne sera entendu qu'Ã  l'endroit exact oÃ¹ il est jouÃ©) et 360 (le son se propagera aux baffles proches).
 		/// </summary>
 		public float spreadLevel = 180;
 	}
 	
 	/// <summary>
-	/// Liste des sons à instancier.
+	/// Liste des sons Ã  instancier.
 	/// </summary>
 	public List<Sound> listOfSounds;
 	
 	/// <summary>
-	/// Sons instanciés.
+	/// Sons instanciÃ©s.
 	/// </summary>
 	private Dictionary<string, AudioSource> instantiatedSounds;
 	/// <summary>
-	/// Musiques instanciées.
+	/// Musiques instanciÃ©es.
 	/// </summary>
 	private Dictionary<string, AudioSource> instantiatedMusics;
 	/// <summary>
-	/// Sons actuellement en lecture pouvant être pausés.
+	/// Sons actuellement en lecture pouvant Ãªtre pausÃ©s.
 	/// </summary>
 	private List<string> pausableSoundsIds;
 	
 	/// <summary>
-	/// Flag permettant de déterminer si tous les sons sont actuellement pausés (utilisé par Un/PauseAllSound).
+	/// Flag permettant de dÃ©terminer si tous les sons sont actuellement pausÃ©s (utilisÃ© par Un/PauseAllSound).
 	/// </summary>
 	private bool soundsArePaused = false;
 	
@@ -103,7 +103,7 @@ public class Base_SoundManager : MonoBehaviour
 	// --- FONCTIONS VITALES
 
 	/// <summary>
-	/// Appelé à l'initialisation de l'instance.
+	/// AppelÃ© Ã  l'initialisation de l'instance.
 	/// </summary>
 	void Awake ()
 	{
@@ -127,7 +127,7 @@ public class Base_SoundManager : MonoBehaviour
 		
 		foreach (Sound sound in listOfSounds)
 		{
-			// Défini depuis quel objet le son va se jouer
+			// DÃ©fini depuis quel objet le son va se jouer
 			// Si null, alors c'est le GST_Sound qui le jouera
 			GameObject targetForSound;
 			if (sound.whoIsPlayingIt != null)
@@ -140,21 +140,21 @@ public class Base_SoundManager : MonoBehaviour
 			}
 			AudioSource asSource = targetForSound.AddComponent<AudioSource>();
 			
-			// Applique les propriétés
+			// Applique les propriÃ©tÃ©s
 			asSource.clip = sound.audioClip;
 			asSource.volume = sound.volume;
 			asSource.loop = sound.playLoop;
-			asSource.pan = sound.pan2D;
+			asSource.panStereo = sound.pan2D;
 			asSource.playOnAwake = false;
 			if (sound.is3D)
 			{
 				asSource.minDistance = sound.minDistance;
 				asSource.maxDistance = sound.maxDistance;
-				asSource.panLevel = sound.panLevel;
+				asSource.spatialBlend = sound.panLevel;
 				asSource.spread = sound.spreadLevel;
 			}
 			
-			// Ajoute le son à la bonne liste (son ou musique)
+			// Ajoute le son Ã  la bonne liste (son ou musique)
 			if (sound.isMusic)
 			{
 				instantiatedMusics.Add(sound.soundName, asSource);
@@ -170,19 +170,19 @@ public class Base_SoundManager : MonoBehaviour
 	/// Joue un son depuis son nom.
 	/// </summary>
 	/// <param name='_soundName'>
-	/// _Nom du son à jouer.
+	/// _Nom du son Ã  jouer.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son n'est pas trouvÃ©.
 	/// </exception>
 	public void PlaySound(string _soundName)
 	{
-		// Vérifie si le son existe
+		// VÃ©rifie si le son existe
 		if (instantiatedSounds.ContainsKey(_soundName))
 		{
-			// Récupère le son
+			// RÃ©cupÃ¨re le son
 			AudioSource sound = instantiatedSounds[_soundName];
-			// Incrémente la liste des sons joués
+			// IncrÃ©mente la liste des sons jouÃ©s
 			if (!pausableSoundsIds.Contains(_soundName))
 			{
 				pausableSoundsIds.Add (_soundName);
@@ -200,17 +200,17 @@ public class Base_SoundManager : MonoBehaviour
 	/// Pause un son depuis son nom.
 	/// </summary>
 	/// <param name='_soundName'>
-	/// _Nom du son à pauser.
+	/// _Nom du son Ã  pauser.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son n'est pas trouvÃ©.
 	/// </exception>
 	public void PauseSound(string _soundName)
 	{
-		// Vérifie si le son est en train d'être joué
+		// VÃ©rifie si le son est en train d'Ãªtre jouÃ©
 		if (pausableSoundsIds.Contains(_soundName))
 		{
-			// Récupère le son
+			// RÃ©cupÃ¨re le son
 			AudioSource sound = instantiatedSounds[_soundName];
 			// Pause le son
 			sound.Pause();
@@ -225,19 +225,19 @@ public class Base_SoundManager : MonoBehaviour
 	/// Stoppe un son depuis son nom.
 	/// </summary>
 	/// <param name='_soundName'>
-	/// _Nom du son à stopper.
+	/// _Nom du son Ã  stopper.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son n'est pas trouvÃ©.
 	/// </exception>
 	public void StopSound(string _soundName)
 	{
-		// Vérifie si le son est en train d'être jouée
+		// VÃ©rifie si le son est en train d'Ãªtre jouÃ©e
 		if (pausableSoundsIds.Contains(_soundName))
 		{
-			// Récupère le son
+			// RÃ©cupÃ¨re le son
 			AudioSource sound = instantiatedSounds[_soundName];
-			// Retire le son de la liste des sons joués
+			// Retire le son de la liste des sons jouÃ©s
 			pausableSoundsIds.Remove(_soundName);
 			// Stoppe le son
 			sound.Stop();
@@ -252,19 +252,19 @@ public class Base_SoundManager : MonoBehaviour
 	/// Joue une musique depuis son nom.
 	/// </summary>
 	/// <param name='_musicName'>
-	/// _Nom de la musique à jouer
+	/// _Nom de la musique Ã  jouer
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public void PlayMusic(string _musicName)
 	{
-		// Vérifie si la musique existe
+		// VÃ©rifie si la musique existe
 		if (instantiatedMusics.ContainsKey(_musicName))
 		{
-			// Récupère la musique
+			// RÃ©cupÃ¨re la musique
 			AudioSource music = instantiatedMusics[_musicName];
-			// Incrémente la liste des sons joués
+			// IncrÃ©mente la liste des sons jouÃ©s
 			if (!pausableSoundsIds.Contains(_musicName))
 			{
 				pausableSoundsIds.Add (_musicName);
@@ -282,17 +282,17 @@ public class Base_SoundManager : MonoBehaviour
 	/// Pause un son depuis son nom.
 	/// </summary>
 	/// <param name='_musicName'>
-	/// _Nom de la musique à pauser.
+	/// _Nom de la musique Ã  pauser.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public void PauseMusic(string _musicName)
 	{
-		// Vérifie si le son est en train d'être jouée
+		// VÃ©rifie si le son est en train d'Ãªtre jouÃ©e
 		if (pausableSoundsIds.Contains(_musicName))
 		{
-			// Récupère la musique
+			// RÃ©cupÃ¨re la musique
 			AudioSource music = instantiatedMusics[_musicName];
 			// Pause la musique
 			music.Pause();
@@ -307,19 +307,19 @@ public class Base_SoundManager : MonoBehaviour
 	/// Stoppe un son depuis son nom.
 	/// </summary>
 	/// <param name='_musicName'>
-	/// _Nom de la musique à stopper.
+	/// _Nom de la musique Ã  stopper.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public void StopMusic(string _musicName)
 	{
-		// Vérifie si la musique est en train d'être jouée
+		// VÃ©rifie si la musique est en train d'Ãªtre jouÃ©e
 		if (pausableSoundsIds.Contains(_musicName))
 		{
-			// Récupère la musique
+			// RÃ©cupÃ¨re la musique
 			AudioSource sound = instantiatedMusics[_musicName];
-			// Retire le son de la liste des sons joués
+			// Retire le son de la liste des sons jouÃ©s
 			pausableSoundsIds.Remove(_musicName);
 			// Stoppe la musique
 			sound.Stop();
@@ -350,7 +350,7 @@ public class Base_SoundManager : MonoBehaviour
 			sound.Pause();
 		}
 		
-		// Passe le flag à true
+		// Passe le flag Ã  true
 		soundsArePaused = true;
 	}
 	
@@ -358,11 +358,11 @@ public class Base_SoundManager : MonoBehaviour
 	/// Remet en lecture tous les sons et toutes les musiques.
 	/// </summary>
 	/// <exception cref='UnityException'>
-	/// Est envoyé si la fonction PauseAllSounds n'a pas été appelée avant.
+	/// Est envoyÃ© si la fonction PauseAllSounds n'a pas Ã©tÃ© appelÃ©e avant.
 	/// </exception>
 	public void TakeBackAllSounds()
 	{
-		// Vérifie le flag
+		// VÃ©rifie le flag
 		if (soundsArePaused)
 		{
 			foreach (string soundId in pausableSoundsIds)
@@ -381,7 +381,7 @@ public class Base_SoundManager : MonoBehaviour
 				sound.Play();
 			}
 			
-			// Passe le flag de nouveau à false
+			// Passe le flag de nouveau Ã  false
 			soundsArePaused = false;
 		}
 		else
@@ -477,16 +477,16 @@ public class Base_SoundManager : MonoBehaviour
 	}
 	
 	/// <summary>
-	/// Joue un son depuis son nom avec un fondu d'entrée.
+	/// Joue un son depuis son nom avec un fondu d'entrÃ©e.
 	/// </summary>
 	/// <param name='_soundName'>
-	/// _Nom du son à jouer
+	/// _Nom du son Ã  jouer
 	/// </param>
 	/// <param name='_time'>
-	/// _Durée du fondu
+	/// _DurÃ©e du fondu
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son n'est pas trouvÃ©.
 	/// </exception>
 	public IEnumerator FadeInSound(string _soundName, float _time)
 	{
@@ -500,10 +500,10 @@ public class Base_SoundManager : MonoBehaviour
 			
 			// Stocke le volume final
 			float finalVolume = sound.volume;
-			// Passe le volume du son à 0
+			// Passe le volume du son Ã  0
 			sound.volume = 0;
 			
-			// Joue le son avec le fondu d'entrée
+			// Joue le son avec le fondu d'entrÃ©e
 			sound.Play();
 			while (sound.volume < finalVolume)
 			{
@@ -518,16 +518,16 @@ public class Base_SoundManager : MonoBehaviour
 	}
 	
 	/// <summary>
-	/// Joue une musique depuis son nom avec un fondu d'entrée.
+	/// Joue une musique depuis son nom avec un fondu d'entrÃ©e.
 	/// </summary>
 	/// <param name='_musicName'>
 	///  Nom de la musique.
 	/// </param>
 	/// <param name='_time'>
-	/// _Durée du fondu.
+	/// _DurÃ©e du fondu.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public IEnumerator FadeInMusic(string _musicName, float _time)
 	{
@@ -541,10 +541,10 @@ public class Base_SoundManager : MonoBehaviour
 			
 			// Stocke le volume final
 			float finalVolume = music.volume;
-			// Passe le volume de la musique à 0
+			// Passe le volume de la musique Ã  0
 			music.volume = 0;
 			
-			// Joue la musique avec le fondu d'entrée
+			// Joue la musique avec le fondu d'entrÃ©e
 			music.Play();
 			while (music.volume < finalVolume)
 			{
@@ -565,10 +565,10 @@ public class Base_SoundManager : MonoBehaviour
 	/// _Nom du son ou de la musique.
 	/// </param>
 	/// <param name='_time'>
-	/// _Durée du fondu.
+	/// _DurÃ©e du fondu.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son ou de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son ou de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public IEnumerator FadeOutSound(string _soundName, float _time)
 	{
@@ -595,7 +595,7 @@ public class Base_SoundManager : MonoBehaviour
 				sound.volume -= originalVolume / (_time / Time.deltaTime);
 			}
 			sound.Stop();
-			// Une fois le son stoppé, on lui redonne son volume d'origine pour pouvoir le jouer de nouveau
+			// Une fois le son stoppÃ©, on lui redonne son volume d'origine pour pouvoir le jouer de nouveau
 			sound.volume = originalVolume;
 		}
 		else
@@ -619,7 +619,7 @@ public class Base_SoundManager : MonoBehaviour
 	/// _Nouveau pitch.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son ou de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son ou de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public void ChangeSoundPitch(string _soundName, float _newPitch)
 	{
@@ -640,13 +640,13 @@ public class Base_SoundManager : MonoBehaviour
 	}
 	
 	/// <summary>
-	/// Rétabli le pitch à 1 d'un son ou d'une musique.
+	/// RÃ©tabli le pitch Ã  1 d'un son ou d'une musique.
 	/// </summary>
 	/// <param name='_soundName'>
 	/// _Nom du son ou de la musique.
 	/// </param>
 	/// <exception cref='KeyNotFoundException'>
-	/// Est envoyé si le nom du son ou de la musique n'est pas trouvé.
+	/// Est envoyÃ© si le nom du son ou de la musique n'est pas trouvÃ©.
 	/// </exception>
 	public void ResetSoundPitch(string _soundName)
 	{

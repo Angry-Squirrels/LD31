@@ -23,13 +23,13 @@ public class CarrotSlot : MonoBehaviour {
 	void Update () {
 		if(mSelected){
 			mSelected = false;
-			renderer.enabled = false;
+			GetComponent<Renderer>().enabled = false;
 		}
 	}
 
 	void OnSelect(){
 		mSelected = true;
-		renderer.enabled = true;
+		GetComponent<Renderer>().enabled = true;
 		if(Input.GetButtonDown("Action")){
 			if(!mHasCarrot && mGameController.TakeCarrot(1)){
 				mHasCarrot = true;
